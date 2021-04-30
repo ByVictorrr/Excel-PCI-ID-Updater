@@ -1,13 +1,11 @@
 package utilities;
 
-import models.Device;
+import models.Vendor;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Queue;
 
 /* Creates a Change log in the corresponding folder*/
 public class Logger {
@@ -16,8 +14,10 @@ public class Logger {
     private static StringBuilder newChanges = new StringBuilder();
     private static StringBuilder oldLog = new StringBuilder();
 
-    private Logger(){}
+    private Logger() {
+    }
 
+    /*
     private static void readLastChangeLog(URLInputStream inputStream)throws Exception{
        BufferedReader r = new BufferedReader(new InputStreamReader(inputStream.getInputStream()));
        String line;
@@ -25,7 +25,7 @@ public class Logger {
            oldLog.append(line + "\n");
        }
     }
-    public static void addEntry(Device d){
+    public static void addEntry(Vendor d){
         newChanges.append("- " + d.toString() + "\n");
     }
 
@@ -56,5 +56,9 @@ public class Logger {
     }
 
 
+
+}
+
+     */
 
 }
