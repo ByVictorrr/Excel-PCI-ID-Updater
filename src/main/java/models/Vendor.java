@@ -1,59 +1,83 @@
 package models;
 
+import adapters.DeviceAdapter;
+import adapters.VendorAdapter;
+import com.google.gson.annotations.JsonAdapter;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.PriorityQueue;
 
-public class Device implements Comparable<Device>{
-    private String desc;
-    private PCI_ID ids;
-    private long lineNum;
 
-    public Device(String desc, String pci_ids){
-        this.desc = desc;
-        this.ids = new PCI_ID(pci_ids);
-        this.lineNum = -1;
+@JsonAdapter(VendorAdapter.class)
+public class Vendor implements Comparable<Vendor>{
+    private int vendor;
+    private String name;
+    private PriorityQueue<Device> devices;
 
+
+    public Vendor(){
+        this.vendor = -1;
+        this.name = null;
+        this.devices = null;
     }
 
-    public long getLineNum() {
-        return lineNum;
+
+    public Vendor(int vendor, String name){
+        this.vendor = vendor;
+        this.name = name;
     }
 
-    public boolean isValid(){
-       return this.ids.isValid();
+    public int getVendor() {
+        return vendor;
     }
 
-    public void setLineNum(long lineNum) {
-        this.lineNum = lineNum;
+    public String getName() {
+        return name;
     }
 
-    public String getDesc() {
-        return desc;
+    public PriorityQueue<Device> getDevices() {
+        return devices;
     }
 
-    public PCI_ID getIds() {
-        return ids;
+    public void setVendor(int vendor) {
+        this.vendor = vendor;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDevices(PriorityQueue<Device> devices) {
+        this.devices = devices;
+    }
+
+    public void addDevice(Device d){
+        this.devices.add(d);
     }
 
     @Override
-    public int compareTo(Device o) {
-        return ids.compareTo(o.ids);
-    }
-
-    public String formatOutput() {
-        String s_ven =  StringUtils.leftPad(Long.toHexString(this.getIds().getSven_id()), 4, "0");
-        String s_dev = StringUtils.leftPad(Long.toHexString(this.getIds().getSdev_id()), 4, "0");
-        return "\t\t" + s_ven
-                + " " + s_dev
-                + "  " + this.desc;
+    public int compareTo(Vendor o) {
+        return this.vendor - o.vendor;
     }
 
     @Override
     public String toString() {
-        return "Device{" +
-                "desc='" + desc + '\'' +
-                ", ids=" + ids +
-                ", lineNum=" + lineNum +
-                '}';
+        String ret = toLine();
+        if(this.devices == null)
+            return ret;
+        ret+= "\n" + this.devices.toString();
+        return ret;
     }
+    public String toLine(){
+        return String.format("%04x", this.vendor) + "  " + this.name;
+    }
+    public int size(){
+        if(devices == null){
+           return 0;
+        }
+        return devices.size();
+    }
+
+
+
 }

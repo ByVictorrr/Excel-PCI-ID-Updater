@@ -55,8 +55,6 @@ public class Logger {
         newChanges.setLength(0);
     }
 
-
-
 }
 
      */

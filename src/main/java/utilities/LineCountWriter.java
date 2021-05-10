@@ -7,8 +7,7 @@ import java.io.Writer;
 public class LineCountWriter extends BufferedWriter {
 
 
-    private BufferedWriter logger;
-    private
+    private Logger logger;
     private int lineNumber;
     public LineCountWriter(Writer out){
         super(out);
