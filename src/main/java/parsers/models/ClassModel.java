@@ -4,14 +4,14 @@ import models.SubSystem;
 
 public class ClassModel {
     private Integer _class, subClass, progIF;
-    private ClassModel instance;
+    private static ClassModel instance;
 
     private ClassModel(){
         this.resetModel();
     }
-    public ClassModel getInstance() {
+    public static ClassModel getInstance() {
         if(instance == null){
-            this.instance = new ClassModel();
+            instance = new ClassModel();
         }
         return instance;
     }
@@ -31,6 +31,7 @@ public class ClassModel {
         this.progIF = null;
     }
 
+    /*
     public int compareTo(){
         int ret = 0;
         if(this.sVendor < to.getSubVendor()) {
@@ -48,5 +49,6 @@ public class ClassModel {
         }
         return ret;
     }
+     */
 
 }

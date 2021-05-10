@@ -13,7 +13,7 @@ import models.Vendor;
 public class VendorModel{
     private Integer vendor, device, sVendor, sDevice;
     private String vName, dName, sName ;
-    private VendorModel instance;
+    private static VendorModel instance;
     public static final int CONTINUE =  -1;
     public static final int EQUAL =  0; // EQUAL mean continue unless overiding enabled
     public static final int WRITE =  1;
@@ -31,10 +31,10 @@ public class VendorModel{
         }
     }
 
-    public VendorModel getInstance()
+    static public VendorModel getInstance()
     {
         if(instance == null){
-            this.instance = new VendorModel();
+            instance = new VendorModel();
         }
         return instance;
     }
@@ -107,5 +107,59 @@ public class VendorModel{
         sDevice = null;
     }
 
+    public Integer getVendor() {
+        return vendor;
+    }
 
+    public void setVendor(Integer vendor) {
+        this.vendor = vendor;
+    }
+
+    public Integer getDevice() {
+        return device;
+    }
+
+    public void setDevice(Integer device) {
+        this.device = device;
+    }
+
+    public Integer getsVendor() {
+        return sVendor;
+    }
+
+    public void setsVendor(Integer sVendor) {
+        this.sVendor = sVendor;
+    }
+
+    public Integer getsDevice() {
+        return sDevice;
+    }
+
+    public void setsDevice(Integer sDevice) {
+        this.sDevice = sDevice;
+    }
+
+    public String getvName() {
+        return vName;
+    }
+
+    public void setvName(String vName) {
+        this.vName = vName;
+    }
+
+    public String getdName() {
+        return dName;
+    }
+
+    public void setdName(String dName) {
+        this.dName = dName;
+    }
+
+    public String getsName() {
+        return sName;
+    }
+
+    public void setsName(String sName) {
+        this.sName = sName;
+    }
 }

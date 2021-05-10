@@ -1,5 +1,6 @@
 package parsers;
 
+import com.sun.org.apache.xerces.internal.dom.PSVIAttrNSImpl;
 import models.Device;
 import models.SubSystem;
 import models.Vendor;
@@ -11,30 +12,22 @@ import javax.sound.sampled.Line;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static parsers.validators.PIValidator.*;
+
 public class LineParser {
 
-    private static final String VENDOR_PATTERN = "^([0-9a-f]{4})(\\s{2}(.*))?$";
-    private static final String DEVICE_PATTERN = "^\\t([0-9a-f]{4})(\\s{2}(.*))?$";
-    private static final String SUB_PATTERN = "^\\t{2}([0-9a-f]{4})\\s{1}([0-9a-f]{4})(\\s{2}(.*))?$";
-    private static final String COMMENT_PATTERN = "^\\s{0,}#.*$";
-    private static final String CLASS_PATTERN = "^([0-9a-f]{2})(\\s{2}(.*))?$";
-    private static final String SUB_CLASS_PATTERN = "^\\t([0-9a-f]{2})(\\s{2}(.*))?$";
-    private static final String PROG_IF_PATTERN = "^\\t{2}([0-9a-f]{2})(\\s{2}(.*))?$";
 
-    /*
-    # Syntax:
-            # C class	class_name
-#	subclass	subclass_name  		<-- single tab
-#		prog-if  prog-if_name  	<-- two tabs
-
-     */
-    private static LineParser instance = null;
+    private static LineParser instance;
     private VendorModel vendorModel;
     private ClassModel classModel;
 
     private LineParser(){
-        if(model == null)
-            this.model = new VendorModel();
+        if(vendorModel == null)
+            this.vendorModel = VendorModel.getInstance();
+
+        if(classModel == null)
+            this.classModel = ClassModel.getInstance();
+
     }
 
     public static LineParser getInstance() {
@@ -43,7 +36,8 @@ public class LineParser {
         }
         return instance;
     }
-    public VendorModel getModel(){return this.model;}
+    public VendorModel getVendorModel(){return this.vendorModel;}
+    public ClassModel getClassModel(){return this.classModel;}
 
 
     public enum TYPES_LINES{
@@ -71,20 +65,20 @@ public class LineParser {
         try {
             if (sMatch.find()) {
                 lineType = TYPES_LINES.SUB_LINE;
-                model.sVendor = Integer.parseInt(sMatch.group(1), 16);
-                model.sDevice = Integer.parseInt(sMatch.group(2), 16);
-                model.sName = sMatch.group(3);
+                vendorModel.setsVendor(Integer.parseInt(sMatch.group(1), 16));
+                vendorModel.setsDevice(Integer.parseInt(sMatch.group(2), 16));
+                vendorModel.setsName(sMatch.group(3));
             } else if (dMatch.find()) {
                 lineType = TYPES_LINES.DEVICE_LINE;
-                model.sVendor = null;
-                model.sDevice = null;
-                model.device = Integer.parseInt(dMatch.group(1), 16);
-                model.dName = dMatch.group(2);
+                vendorModel.setsVendor(null);
+                vendorModel.setsDevice(null);
+                vendorModel.setDevice(Integer.parseInt(dMatch.group(1), 16));
+                vendorModel.setdName(dMatch.group(2));
             } else if (vMatch.find()) {
                 lineType = TYPES_LINES.VENDOR_LINE;
-                model.resetModel();
-                model.vendor = Integer.parseInt(vMatch.group(1), 16);
-                model.vName = vMatch.group(2);
+                vendorModel.resetModel();
+                vendorModel.setVendor(Integer.parseInt(vMatch.group(1), 16));
+                vendorModel.setvName(vMatch.group(2));
             }else if(progIFMatch.find()){
 
 
