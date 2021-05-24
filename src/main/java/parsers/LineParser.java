@@ -11,9 +11,15 @@ import parsers.models.vendormodels.VendorLine;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static validators.PIValidator.*;
 
 public class LineParser {
+    public static final String VENDOR_PATTERN = "^([0-9a-f]{4})(\\s{2}(.*))?$";
+    public static final String DEVICE_PATTERN = "^\\t([0-9a-f]{4})(\\s{2}(.*))?$";
+    public static final String SUB_PATTERN = "^\\t{2}([0-9a-f]{4})\\s{1}([0-9a-f]{4})(\\s{2}(.*))?$";
+    public static final String COMMENT_PATTERN = "\\s*#.*";
+    public static final String CLASS_PATTERN = "^C\\s([0-9a-f]{2})(\\s{2}(.*))?$";
+    public static final String SUB_CLASS_PATTERN = "^\\t([0-9a-f]{2})(\\s{2}(.*))?$";
+    public static final String PROG_IF_PATTERN = "^\\t{2}([0-9a-f]{2})(\\s{2}(.*))?$";
 
     /* For a Vendor model */
     private static final int VENDOR_ID_GROUP = 1;
@@ -36,10 +42,17 @@ public class LineParser {
 
 
     /* For line types */
-    public enum TYPES_LINES{
+    public enum LineType {
         VENDOR_LINE, DEVICE_LINE, SUBSYSTEM_LINE, CLASS_LINE, SUB_CLASS_LINE,
         PROG_IF_LINE, COMMENT_LINE, BLANK_LINE, INVALID_LINE
     }
+    public static boolean isVendorModel(LineType type){
+        return type == LineType.VENDOR_LINE || type == LineType.DEVICE_LINE || type == LineType.SUBSYSTEM_LINE;
+    }
+    public static boolean isClassModel(LineType type){
+        return type == LineType.CLASS_LINE || type == LineType.SUB_CLASS_LINE || type == LineType.PROG_IF_LINE;
+    }
+
 
     private static final int EXPECTED_BASE = 16;
 
@@ -65,19 +78,19 @@ public class LineParser {
     public VendorModel getVendorModel(){return this.vendorModel;}
     public ClassModel getClassModel(){return this.classModel;}
 
-    public boolean isVendorModelLine(TYPES_LINES lineT){
-        return lineT == TYPES_LINES.DEVICE_LINE ||
-                lineT == TYPES_LINES.VENDOR_LINE ||
-                lineT == TYPES_LINES.SUB_CLASS_LINE;
+    public boolean isVendorModelLine(LineType lineT){
+        return lineT == LineType.DEVICE_LINE ||
+                lineT == LineType.VENDOR_LINE ||
+                lineT == LineType.SUB_CLASS_LINE;
     }
-    public boolean isClassModelLine(TYPES_LINES lineT){
-        return lineT == TYPES_LINES.PROG_IF_LINE ||
-                lineT == TYPES_LINES.SUB_CLASS_LINE ||
-                lineT == TYPES_LINES.CLASS_LINE;
+    public boolean isClassModelLine(LineType lineT){
+        return lineT == LineType.PROG_IF_LINE ||
+                lineT == LineType.SUB_CLASS_LINE ||
+                lineT == LineType.CLASS_LINE;
     }
 
 
-    public Pair<TYPES_LINES, Matcher> getTypeLine(String line){
+    public Pair<LineType, Matcher> getTypeLine(String line){
         final Matcher vMatch = Pattern.compile(VENDOR_PATTERN).matcher(line);
         final Matcher dMatch = Pattern.compile(DEVICE_PATTERN).matcher(line);
         final Matcher sMatch = Pattern.compile(SUB_PATTERN).matcher(line);
@@ -87,23 +100,23 @@ public class LineParser {
         final Matcher progIFMatch = Pattern.compile(PROG_IF_PATTERN).matcher(line);
 
         if(sMatch.find()){
-            return new Pair<TYPES_LINES, Matcher>(TYPES_LINES.SUBSYSTEM_LINE, sMatch);
+            return new Pair<LineType, Matcher>(LineType.SUBSYSTEM_LINE, sMatch);
         }else if(dMatch.find()){
-            return new Pair<TYPES_LINES, Matcher>(TYPES_LINES.DEVICE_LINE, dMatch);
+            return new Pair<LineType, Matcher>(LineType.DEVICE_LINE, dMatch);
         }else if(vMatch.find()){
-            return new Pair<TYPES_LINES, Matcher>(TYPES_LINES.VENDOR_LINE, dMatch);
+            return new Pair<LineType, Matcher>(LineType.VENDOR_LINE, vMatch);
         }else if(progIFMatch.find()){
-            return new Pair<TYPES_LINES, Matcher>(TYPES_LINES.PROG_IF_LINE, progIFMatch);
+            return new Pair<LineType, Matcher>(LineType.PROG_IF_LINE, progIFMatch);
         }else if(sClassMatch.find()){
-            return new Pair<TYPES_LINES, Matcher>(TYPES_LINES.SUB_CLASS_LINE, sClassMatch);
+            return new Pair<LineType, Matcher>(LineType.SUB_CLASS_LINE, sClassMatch);
         }else if(classMatch.find()){
-            return new Pair<TYPES_LINES, Matcher>(TYPES_LINES.CLASS_LINE, classMatch);
+            return new Pair<LineType, Matcher>(LineType.CLASS_LINE, classMatch);
         }else if(commentMatch.find()){
-            return new Pair<TYPES_LINES, Matcher>(TYPES_LINES.COMMENT_LINE, commentMatch);
+            return new Pair<LineType, Matcher>(LineType.COMMENT_LINE, commentMatch);
         }else if(StringUtils.isBlank(line)){
-            return new Pair<TYPES_LINES, Matcher>(TYPES_LINES.BLANK_LINE, null);
+            return new Pair<LineType, Matcher>(LineType.BLANK_LINE, null);
         }
-        return new Pair<TYPES_LINES, Matcher>(TYPES_LINES.INVALID_LINE, null);
+        return new Pair<LineType, Matcher>(LineType.INVALID_LINE, null);
     }
     private void parseSubSystemLine(Matcher groups, int lineNum) throws LineOutOfOrderException{
 
@@ -173,32 +186,33 @@ public class LineParser {
      * @param line : a String that is used to get the type of line
      * @return : the type of line
      */
-    public TYPES_LINES parseLine(String line, int lineNum) throws LineOutOfOrderException {
+    public LineType parseLine(String line, int lineNum) throws LineOutOfOrderException {
 
-        Pair<TYPES_LINES, Matcher> lineType = getTypeLine(line);
+        Pair<LineType, Matcher> lineObj = getTypeLine(line);
 
-        switch (lineType.getKey()){
+        switch (lineObj.getKey()){
             case SUBSYSTEM_LINE:
-                parseSubSystemLine(lineType.getValue(), lineNum);
+                parseSubSystemLine(lineObj.getValue(), lineNum);
                 break;
             case DEVICE_LINE:
-                parseDeviceLine(lineType.getValue(), lineNum);
+                parseDeviceLine(lineObj.getValue(), lineNum);
                 break;
             case VENDOR_LINE:
-                parseVendorLine(lineType.getValue(), lineNum);
+                parseVendorLine(lineObj.getValue(), lineNum);
                 break;
             case PROG_IF_LINE:
-                parseProgIFLine(lineType.getValue(), lineNum);
+                parseProgIFLine(lineObj.getValue(), lineNum);
                break;
             case SUB_CLASS_LINE:
-                parseSubClassLine(lineType.getValue(), lineNum);
+                parseSubClassLine(lineObj.getValue(), lineNum);
                 break;
             case CLASS_LINE:
+                parseClassLine(lineObj.getValue(), lineNum);
                break;
             default:
         }
 
-        return lineType.getKey();
+        return lineObj.getKey();
     }
 
 

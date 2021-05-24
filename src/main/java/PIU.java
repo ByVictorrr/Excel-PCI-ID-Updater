@@ -1,22 +1,16 @@
-import adapters.VendorAdapter;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import models.Device;
-import models.SubSystem;
+import models.Classs;
 import models.Vendor;
 import parsers.LineParser;
 import parsers.models.VendorModel;
 import picocli.CommandLine;
 import com.google.gson.Gson;
 import utilities.LineCountWriter;
-import validators.PIValidator;
 
-import javax.sound.sampled.Line;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static parsers.LineParser.TYPES_LINES.*;
 import static parsers.models.VendorModel.*;
 
 
@@ -60,7 +54,7 @@ public class PIU implements Runnable{
         private String piuEntry = null;
     }
 
-    private PriorityQueue<Vendor> buildPendingVendors(BufferedReader reader) throws Exception{
+    private PriorityQueue<Vendor> buildPendingVendors() throws Exception{
         PriorityQueue<Vendor> pv = null;
         if(exclusiveVendor.piuEntry != null && exclusiveVendor.piuJSON != null){
             pv = new Gson().fromJson(
@@ -78,59 +72,17 @@ public class PIU implements Runnable{
 
         return pv;
     }
-
-
-    @Override
-    public void run() {
-
-        // This function builds our class and vendor models
-
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(inputPCIidFile));
-            LineCountWriter out = new LineCountWriter(new FileWriter(outputPCIidFile));
-            PriorityQueue<Vendor> pendingVendors = buildPendingVendors(in);
-            PriorityQueue<Class> pendingClasses /*= buildPendingClasses(in)*/;
-
-            update(pendingVendors, /*pendingClasses,*/ in, out);
-
-        }catch (Exception e){
-            e.printStackTrace();
-            System.out.println(e);
-        }
-
+    private PriorityQueue<Classs> buildPendingClasses() throws Exception{
+        PriorityQueue<Classs> pc = null;
+        return pc;
     }
 
 
-    private void update(PriorityQueue<Vendor> pv, BufferedReader reader, LineCountWriter writer) throws Exception
-    {
-        int lineNum = 0;
-        LineParser.TYPES_LINES lineType;
-        for(String line: reader.lines().collect(Collectors.toList())) {
-            /*
-            if(!PIValidator.isLineValid(line)) {
-                System.err.println("input pci.ids file is invalid at " + lineNum);
-                return;
-            }
-             */
 
-            // Step 2 - parse that line
-            lineType=LineParser.getInstance().parseLine(line, lineNum);
 
-            // Step 3 - write pending objects to pci.ids
-            if((lineType == VENDOR_LINE || lineType == DEVICE_LINE || lineType == SUBSYSTEM_LINE) && pv.size() > 0) {
-                writePendingVendors(pv, writer, lineType); // assume pv isnt empty
-            }else if((lineType == CLASS_LINE || lineType == SUB_CLASS_LINE || lineType == PROG_IF_LINE)){
-                // && pc.size() > 0
-            }else {
-                writer.write(line + "\n");
-            }
-            lineNum++;
 
-        }
-
-    }
     /* Assumed to have at least one vendor in the queue*/
-    private void writePendingVendors(PriorityQueue<Vendor> pv, LineCountWriter writer, LineParser.TYPES_LINES line) throws Exception{
+    private void writePendingVendors(PriorityQueue<Vendor> pv, LineCountWriter writer, LineParser.LineType line) throws Exception{
         int comp = CONTINUE;
         VendorModel vendorModel = LineParser.getInstance().getVendorModel();
         switch (line){
@@ -195,9 +147,57 @@ public class PIU implements Runnable{
             }
 
         }
-        writer.write(line + "\n");
     }
-    private void writePendingClass(){}
+    private void writePendingClasses(PriorityQueue<Classs> pc, LineCountWriter writer, LineParser.LineType line) throws Exception{
+
+    }
+
+    private void update(PriorityQueue<Vendor> pv, PriorityQueue<Classs> pc, BufferedReader reader, LineCountWriter writer) throws Exception
+    {
+        int lineNum = 0;
+        LineParser.LineType lineType;
+        for(String line: reader.lines().collect(Collectors.toList())) {
+
+            // Step 2 - parse that line
+            lineType=LineParser.getInstance().parseLine(line, lineNum);
+            // Step 3 - write pending objects to pci.ids
+            if(pv != null && pv.size() > 0 && LineParser.isVendorModel(lineType)){
+                writePendingVendors(pv, writer, lineType);
+            }else if (pc != null && pc.size() > 0 && LineParser.isClassModel(lineType)){
+                writePendingClasses(pc, writer, lineType);
+            }else if(lineType == LineParser.LineType.INVALID_LINE){
+                System.err.println("line " + lineNum + ": invalid line, please correct before continuing");
+                return;
+            }
+            writer.write(line + "\n");
+            lineNum++;
+
+        }
+
+    }
+    @Override
+    public void run() {
+
+        // This function builds our class and vendor models
+
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(inputPCIidFile));
+            LineCountWriter out = new LineCountWriter(new FileWriter(outputPCIidFile));
+
+            PriorityQueue<Vendor> pendingVendors = buildPendingVendors();
+            PriorityQueue<Classs> pendingClassses = buildPendingClasses();
+
+            update(pendingVendors, pendingClassses, in, out);
+
+            out.close();
+            in.close();
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println(e);
+        }
+
+    }
+
 
 
     public static void main(String [] args){
