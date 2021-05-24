@@ -23,10 +23,11 @@ public class Device implements Comparable<Device>{
     @Override
     public String toString() {
         String ret =toLine();
-        if(this.subSystems == null)
-            return ret;
-        else
-            ret+="\n"+this.subSystems.toString();
+        if(this.subSystems != null){
+            for(SubSystem sub: this.subSystems){
+                ret+="\n"+sub.toString();
+            }
+        }
         return ret;
     }
 

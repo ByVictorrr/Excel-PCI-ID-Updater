@@ -63,9 +63,11 @@ public class Vendor implements Comparable<Vendor>{
     @Override
     public String toString() {
         String ret = toLine();
-        if(this.devices == null)
-            return ret;
-        ret+= "\n" + this.devices.toString();
+        if(this.devices != null) {
+            for(Device dev: this.devices){
+                ret += "\n" + dev.toString();
+            }
+        }
         return ret;
     }
     public String toLine(){

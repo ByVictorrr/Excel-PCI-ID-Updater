@@ -24117,8 +24117,10 @@
 	0100  AladdinCARD
 	0200  CPC
 4215  QLogicz
-[	9231  ISPLess, 	9522  ISP2532-based 8Gb Fibre Channel to PCI Express HBA
-[		1014 03ff  FC EN0Y/EN12 PCIe2 LP 8 Gb 2-port Fibre Channel Adapter for POWER, 		1014 041e  hi]]
+	9231  ISPLess
+	9522  ISP2532-based 8Gb Fibre Channel to PCI Express HBA
+		1014 03ff  FC EN0Y/EN12 PCIe2 LP 8 Gb 2-port Fibre Channel Adapter for POWER
+		1014 041e  hi
 4254  DVBSky
 4321  Tata Power Strategic Electronics Division
 4348  WCH.CN
