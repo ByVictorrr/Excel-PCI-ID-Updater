@@ -1,8 +1,12 @@
 package parsers.models;
 
+import exceptions.LineOutOfOrderException;
 import models.Device;
 import models.SubSystem;
 import models.Vendor;
+import parsers.models.vendormodels.DeviceLine;
+import parsers.models.vendormodels.SubSystemLine;
+import parsers.models.vendormodels.VendorLine;
 
 // should line parser produce a variable to hold everything
     /* NOTES:
@@ -11,25 +15,18 @@ import models.Vendor;
         sDevice && sVendor : always are null or not null togher
      */
 public class VendorModel{
-    private Integer vendor, device, sVendor, sDevice;
-    private String vName, dName, sName ;
+    private SubSystemLine sub;
+    private DeviceLine dev;
+    private VendorLine ven;
     private static VendorModel instance;
+
+
     public static final int CONTINUE =  -1;
     public static final int EQUAL =  0; // EQUAL mean continue unless overiding enabled
     public static final int WRITE =  1;
-    private VendorModel(){}
-    /* Because sDevice and sVendor are never set seperately the size will be 0,1 or 4*/
-    private int size() {
-        if(vendor == null) {
-            return 0;
-        }else if(device == null) {
-            return 1;
-        }else if(sDevice == null && sDevice == null){
-            return 2;
-        }else{
-            return 4;
-        }
-    }
+
+    private VendorModel(){ this.resetModel();}
+
 
     static public VendorModel getInstance()
     {
@@ -39,14 +36,28 @@ public class VendorModel{
         return instance;
     }
 
+    /* Because sDevice and sVendor are never set seperately the size will be 0,1 or 4*/
+    private int size(){
+        if(ven == null){
+            return 0;
+        }else if(dev == null) {
+            return 1;
+        }else if(sub == null){
+            return 2;
+        }else{
+            return 4;
+        }
+    }
+
+
     public int compareTo(SubSystem to){
         int ret = 0;
-        if(this.sVendor < to.getSubVendor()) {
+        if(this.sub.getvId() < to.getSubVendor()) {
             ret = CONTINUE;
-        }else if(this.sVendor == to.getSubVendor()) {
-            if (this.sDevice < to.getSubDevice()) {
+        }else if(this.sub.getvId() == to.getSubVendor()) {
+            if (this.sub.getdId() < to.getSubDevice()) {
                 ret = CONTINUE;
-            } else if (this.sDevice == to.getSubDevice()){
+            } else if (this.sub.getdId() == to.getSubDevice()){
                 return EQUAL;
             }else {
                 ret = WRITE;
@@ -59,9 +70,9 @@ public class VendorModel{
 
     public int compareTo(Device to){
         int ret = WRITE;
-        if(this.device < to.getDevice()) {
+        if(this.dev.getId() < to.getDevice()) {
             ret = CONTINUE; // means continue and dont write ye
-        }else if( this.device == to.getDevice()){
+        }else if( this.dev.getId() == to.getDevice()){
             if(this.size() == 2){
                 ret = EQUAL;
             }else if(to.getSubSystems().size() == 0){
@@ -75,20 +86,19 @@ public class VendorModel{
         return ret;
     }
 
-    // handle vendorarr.size() in other
+
     public int compareTo(Vendor to){
 
         int ret = 0;
         // Case 0 - equal meaning size == 1 and samw vendor
         // Case 1 - if lined vendor is less than the pending vendor
-        if(this.vendor < to.getVendor()) {
+        if(this.ven.getId() < to.getVendor()) {
             ret = CONTINUE; // means continue and dont write yet
-        }else if( this.vendor == to.getVendor()){
+        }else if( this.ven.getId() == to.getVendor()){
             // Case where we havent read a device yet
             if(this.size() == 1){
                 ret = EQUAL;
-            }
-            else if(to.getDevices().size() == 0){
+            }else if(to.getDevices().size() == 0){
                 ret = CONTINUE;
             }else {
                 ret = this.compareTo(to.getDevices().peek());
@@ -101,65 +111,32 @@ public class VendorModel{
     }
 
     public void resetModel(){
-        vendor = null;
-        device = null;
-        sVendor = null;
-        sDevice = null;
+        ven = null;
+        dev = null;
+        sub = null;
     }
 
-    public Integer getVendor() {
-        return vendor;
+    public SubSystemLine getSub() {
+        return sub;
     }
 
-    public void setVendor(Integer vendor) {
-        this.vendor = vendor;
+    public void setSub(SubSystemLine sub) {
+        this.sub = sub;
     }
 
-    public Integer getDevice() {
-        return device;
+    public DeviceLine getDev() {
+        return dev;
     }
 
-    public void setDevice(Integer device) {
-        this.device = device;
+    public void setDev(DeviceLine dev) {
+        this.dev = dev;
     }
 
-    public Integer getsVendor() {
-        return sVendor;
+    public VendorLine getVen() {
+        return ven;
     }
 
-    public void setsVendor(Integer sVendor) {
-        this.sVendor = sVendor;
-    }
-
-    public Integer getsDevice() {
-        return sDevice;
-    }
-
-    public void setsDevice(Integer sDevice) {
-        this.sDevice = sDevice;
-    }
-
-    public String getvName() {
-        return vName;
-    }
-
-    public void setvName(String vName) {
-        this.vName = vName;
-    }
-
-    public String getdName() {
-        return dName;
-    }
-
-    public void setdName(String dName) {
-        this.dName = dName;
-    }
-
-    public String getsName() {
-        return sName;
-    }
-
-    public void setsName(String sName) {
-        this.sName = sName;
+    public void setVen(VendorLine ven) {
+        this.ven = ven;
     }
 }
