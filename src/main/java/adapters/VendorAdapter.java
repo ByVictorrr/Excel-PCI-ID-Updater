@@ -7,6 +7,8 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import models.Device;
 import models.Vendor;
+import utilities.Logger;
+
 
 import java.io.IOException;
 import java.util.PriorityQueue;
@@ -33,15 +35,19 @@ public class VendorAdapter extends TypeAdapter<Vendor> {
 
                 if(VENDOR_ID_KEY.equals(fieldName)){
                     if((id=Integer.parseInt(reader.nextString(),16)) > 0xffff || id < 0){
-                        System.err.println("Vendor : " + Integer.toHexString(id) + " is an invalid vendor");
+                        Logger.getInstance().println("Vendor : " + Integer.toHexString(id) + " is an invalid vendor");
                         v=null;
                     }else {
                         v.setVendor(id);
                     }
 
                 }else if(VENDOR_NAME_KEY.equals(fieldName)){
-                    name = reader.nextString();
-                    if(v != null) v.setName(name);
+                    if(reader.peek() == JsonToken.STRING) {
+                        name = reader.nextString();
+                        if (v != null) v.setName(name);
+                    }else if(reader.peek() == JsonToken.NULL){
+                        reader.nextNull();
+                    }
                 }else if(VENDOR_DEVICES_KEY.equals(fieldName)){
                     if(reader.peek() == JsonToken.BEGIN_ARRAY) {
                         reader.beginArray();

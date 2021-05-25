@@ -30,6 +30,44 @@
         "vendor": "ffff",
         "name": "victor",
         "devices": []
-    }
+    },
+    {
+        "vendor": edd8,
+        "name": "ARK Logic Inc",
+        "devices" : [
+            {
+                "device":  a092,
+                "name": "100)v",
+                "subSystems": [
+                     {
+                        "subVendor": "ffff",
+                        "subDevice": "1023",
+                        "name" : "FC EN0Y/EN12 PCIe2 LP 8 Gb 2-port Fibre Channel Adapter for POWER"
+                     }
+                ]
 
+            },
+            {
+                "device": a093,
+                "name": "hi"
+            }
+        ]
+    },
+    {
+        "vendor" : e159,
+        "name": null,
+        "devices": [
+            {
+                "device": 0001,
+                "name": null,
+                "subSystems":[
+                    {
+                        "subVendor": 0059,
+                        "subDevice": 0002,
+                        "name": "hello world"
+                    }
+                ]
+            }
+        ]
+    }
 ]

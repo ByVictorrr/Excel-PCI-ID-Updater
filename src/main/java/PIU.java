@@ -1,12 +1,15 @@
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import models.Classs;
+import models.Class;
+import models.Device;
+import models.SubSystem;
 import models.Vendor;
 import parsers.LineParser;
 import parsers.models.VendorModel;
 import picocli.CommandLine;
 import com.google.gson.Gson;
 import utilities.LineCountWriter;
+import utilities.Logger;
 
 import java.io.*;
 import java.util.*;
@@ -27,7 +30,6 @@ public class PIU implements Runnable{
     @CommandLine.ArgGroup(exclusive = false, multiplicity = "1..*")
     private UpdateOptions options;
 
-    public PrintStream logger = System.err;
 
 
     static class UpdateOptions{
@@ -45,12 +47,14 @@ public class PIU implements Runnable{
         PriorityQueue<Vendor> pv = null;
         if(options.vendorEntry != null && options.vendorJSON != null){
             pv = new GsonBuilder().setLenient().create().fromJson(
-                    new FileReader(options.vendorJSON), new TypeToken<PriorityQueue<Vendor>>(){}.getType()
+                    new FileReader(options.vendorJSON),
+                    new TypeToken<PriorityQueue<Vendor>>(){}.getType()
             );
             pv.add(new Vendor()); // parse here
         }else if(options.vendorJSON != null){
             pv = new GsonBuilder().setLenient().create().fromJson(
-                new FileReader(options.vendorJSON), new TypeToken<PriorityQueue<Vendor>>(){}.getType()
+                    new FileReader(options.vendorJSON),
+                    new TypeToken<PriorityQueue<Vendor>>(){}.getType()
             );
         }else if(options.vendorEntry != null){
             pv = new PriorityQueue<>();
@@ -59,8 +63,8 @@ public class PIU implements Runnable{
 
         return pv;
     }
-    private PriorityQueue<Classs> buildPendingClasses() throws Exception{
-        PriorityQueue<Classs> pc = null;
+    private PriorityQueue<Class> buildPendingClasses() throws Exception{
+        PriorityQueue<Class> pc = null;
         return pc;
     }
 
@@ -74,41 +78,39 @@ public class PIU implements Runnable{
         VendorModel vendorModel = LineParser.getInstance().getVendorModel();
         Vendor currVendor = pv.peek();
         switch (line){
-            case VENDOR_LINE: {
+            case VENDOR_LINE:
                 // check to see if we have contigious vendors to write
-                while (pv.size() > 0  && (comp = vendorModel.compareTo(currVendor)) == WRITE) {
+                while (currVendor != null  && (comp = vendorModel.compareTo(currVendor)) == WRITE) {
                     writer.write(currVendor.toString() + "\n");
-                    logger.println("new output at line " + writer.getLineNumber() + ": " + currVendor);
+                    Logger.getInstance().println("new output at line " + writer.getLineNumber() + ": " + currVendor);
                     pv.poll();
                     currVendor = pv.peek();
                 }
 
-            }
             break;
             case DEVICE_LINE:
+                Device currDevice;
                 while (currVendor.size() > 0 && (comp=vendorModel.compareTo(currVendor)) == WRITE) {
-                    writer.write(currVendor.getDevices().poll().toString());
-                    // Check if this vendor is empty after getting rid of device
-                    if(currVendor.size() == 0){
-                        pv.poll();
-                    }
+                    currDevice = currVendor.getDevices().poll();
+                    writer.write(currDevice.toString() + "\n");
+                    Logger.getInstance().println("new output at line " + writer.getLineNumber() + ": " + currDevice);
+                    if(currVendor.size() == 0) pv.poll();
                 }
 
             break;
             case SUBSYSTEM_LINE:
-
+                SubSystem currSub;
                 while( currVendor.size() > 0 && currVendor.getDevices().peek().size() > 0 && (comp = vendorModel.compareTo(currVendor)) == WRITE) {
-                    writer.write(currVendor.getDevices().peek().getSubSystems().poll().toString() + "\n");
-                    if (currVendor.getDevices().peek().getSubSystems().size() == 0) {
-                        currVendor.getDevices().poll();
-                    }
-                    if (currVendor.size() == 0) {
-                        pv.poll();
-                    }
+                    currSub = currVendor.getDevices().peek().getSubSystems().poll();
+                    writer.write(currSub.toString() + "\n");
+                    Logger.getInstance().println("new output at line " + writer.getLineNumber() + ": " + currSub);
+                    if (currVendor.size() == 0) pv.poll();
+                    if (currVendor.getDevices().peek().getSubSystems().size() == 0) currVendor.getDevices().poll();
+                    if (currVendor.size() == 0) pv.poll();
                 }
         }
     }
-    private void writePendingClasses(PriorityQueue<Classs> pc, LineCountWriter writer, LineParser.LineType line) throws Exception{
+    private void writePendingClasses(PriorityQueue<Class> pc, LineCountWriter writer, LineParser.LineType line) throws Exception{
         int comp = CONTINUE;
         VendorModel vendorModel = LineParser.getInstance().getVendorModel();
         switch (line) {
@@ -122,7 +124,7 @@ public class PIU implements Runnable{
         }
     }
 
-    private void update(PriorityQueue<Vendor> pv, PriorityQueue<Classs> pc, BufferedReader reader, LineCountWriter writer) throws Exception
+    private void update(PriorityQueue<Vendor> pv, PriorityQueue<Class> pc, BufferedReader reader, LineCountWriter writer) throws Exception
     {
         int lineNum = 0;
         LineParser.LineType lineType;
@@ -153,9 +155,11 @@ public class PIU implements Runnable{
         try {
             BufferedReader in = new BufferedReader(new FileReader(inputPCIidFile));
             LineCountWriter out = new LineCountWriter(new FileWriter(outputPCIidFile));
+            Logger.getInstance().init(new FileOutputStream("C:\\Users\\delaplai\\Excel-PCI-ID-Updater\\src\\main\\tests\\logs"));
 
             PriorityQueue<Vendor> pendingVendors = buildPendingVendors();
-            PriorityQueue<Classs> pendingClasses = buildPendingClasses();
+            PriorityQueue<Class> pendingClasses = buildPendingClasses();
+
 
             update(pendingVendors, pendingClasses, in, out);
 

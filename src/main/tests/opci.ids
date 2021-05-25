@@ -33621,6 +33621,7 @@ e000  Winbond
 e159  Tiger Jet Network Inc. / ICP DAS
 	0001  Tiger3XX Modem/ISDN interface
 		0059 0001  128k ISDN-S/T Adapter
+		0059 0002  hello world
 		0059 0003  128k ISDN-U Adapter
 		00a7 0001  TELES.S0/PCI 2.x ISDN Adapter
 		8086 0003  Digium X100P/X101P analogue PSTN FXO interface
@@ -33719,6 +33720,9 @@ ec80  Belkin Corporation
 ecc0  Echo Digital Audio Corporation
 edd8  ARK Logic Inc
 	a091  1000PV [Stingray]
+	a092  100)v
+		ffff 1023  FC EN0Y/EN12 PCIe2 LP 8 Gb 2-port Fibre Channel Adapter for POWER
+	a093  hi
 	a099  2000PV [Stingray]
 	a0a1  2000MT
 	a0a9  2000MI

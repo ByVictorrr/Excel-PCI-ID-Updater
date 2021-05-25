@@ -25,6 +25,7 @@ public class Vendor implements Comparable<Vendor>{
     public Vendor(int vendor, String name){
         this.vendor = vendor;
         this.name = name;
+        this.devices = null;
     }
 
     public int getVendor() {

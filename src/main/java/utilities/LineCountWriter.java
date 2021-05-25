@@ -25,6 +25,7 @@ public class LineCountWriter extends BufferedWriter {
             lineNumber++;
         }
         super.write(str);
+
     }
 
 

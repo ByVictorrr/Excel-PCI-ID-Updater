@@ -8,6 +8,7 @@ import com.google.gson.stream.JsonWriter;
 import models.Device;
 import models.SubSystem;
 import models.Vendor;
+import utilities.Logger;
 
 import java.io.IOException;
 import java.util.PriorityQueue;
@@ -34,14 +35,18 @@ public class DeviceAdapter extends TypeAdapter<Device> {
             }
             if(DEVICE_ID_KEY.equals(fieldName)){
                 if((id=Integer.parseInt(reader.nextString(), 16)) > 0xffff || id < 0){
-                    System.err.println("Device : " + Integer.toHexString(id) + " is an invalid device");
+                    Logger.getInstance().println("Device : " + Integer.toHexString(id) + " is an invalid device");
                     d = null;
                 }else {
                     d.setDevice(id);
                 }
             } else if(DEVICE_NAME_KEY.equals(fieldName)){
-                name = reader.nextString();
-                if(d != null) d.setName(name);
+                if(reader.peek() == JsonToken.STRING) {
+                    name = reader.nextString();
+                    if (d != null) d.setName(name);
+                }else if(reader.peek() == JsonToken.NULL){
+                    reader.nextNull();
+                }
             }else if(DEVICE_SUBSYSTEMS_KEY.equals(fieldName)){
                 if(reader.peek() == JsonToken.BEGIN_ARRAY) {
                     reader.beginArray();

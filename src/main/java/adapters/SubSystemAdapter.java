@@ -8,6 +8,7 @@ import com.google.gson.stream.JsonWriter;
 import models.Device;
 import models.SubSystem;
 import models.Vendor;
+import utilities.Logger;
 
 import java.io.IOException;
 
@@ -32,7 +33,7 @@ public class SubSystemAdapter extends TypeAdapter<SubSystem> {
             }
             if(SUBSYSTEM_VENDOR_KEY.equals(fieldName)) {
                 if ((vID = Integer.parseInt(reader.nextString(), 16)) > 0xFFFF || vID < 0) {
-                    System.err.println("Subsystem Vendor : " + Integer.toHexString(vID) + " is an invalid sub-vendor");
+                    Logger.getInstance().println("Subsystem Vendor : " + Integer.toHexString(vID) + " is an invalid sub-vendor");
                     s = null;
                 } else {
                     s.setSubVendor(vID);
@@ -40,14 +41,18 @@ public class SubSystemAdapter extends TypeAdapter<SubSystem> {
 
             }else if(SUBSYSTEM_DEVICE_KEY.equals(fieldName)){
                 if((dID = Integer.parseInt(reader.nextString() ,16)) > 0xFFFF || dID < 0) {
-                    System.err.println("Subsystem Device : " + Integer.toHexString(dID) + " is an invalid sub-device");
+                    Logger.getInstance().println("Subsystem Device : " + Integer.toHexString(dID) + " is an invalid sub-device");
                     s = null;
                 }else {
                     s.setSubDevice(dID);
                 }
             }else if(SUBSYSTEM_NAME_KEY.equals(fieldName)){
-                name = reader.nextString();
-                if(s != null) s.setName(name);
+                if(reader.peek() == JsonToken.STRING) {
+                    name = reader.nextString();
+                    if (s != null) s.setName(name);
+                }else if(reader.peek() == JsonToken.NULL){
+                    reader.nextNull();
+                }
             }
         }
         reader.endObject();

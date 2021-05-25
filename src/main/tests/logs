@@ -1,0 +1,9 @@
+new output at line 24123: 4215  QLogicz
+	9522  ISP2532-based 8Gb Fibre Channel to PCI Express HBA
+		4116 1054  hi
+		ffff 1023  FC EN0Y/EN12 PCIe2 LP 8 Gb 2-port Fibre Channel Adapter for POWER
+	fff2  ISPLess
+new output at line 33624: 		0059 0002  hello world
+new output at line 33724: 	a092  100)v
+		ffff 1023  FC EN0Y/EN12 PCIe2 LP 8 Gb 2-port Fibre Channel Adapter for POWER
+new output at line 33725: 	a093  hi
