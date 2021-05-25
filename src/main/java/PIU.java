@@ -10,12 +10,14 @@ import picocli.CommandLine;
 import com.google.gson.Gson;
 import utilities.LineCountWriter;
 import utilities.Logger;
+import utilities.Updater;
 
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static parsers.models.VendorModel.*;
+import static utilities.Updater.update;
 
 
 @CommandLine.Command(name="piu", version="piu 1.0", mixinStandardHelpOptions = true)
@@ -88,95 +90,9 @@ public class PIU implements Runnable{
 
 
 
-    /* Assumed to have at least one vendor in the queue*/
-    private void writePendingVendors(PriorityQueue<Vendor> pv, LineCountWriter writer, LineParser.LineType line) throws Exception{
-        int comp = CONTINUE;
-        VendorModel vendorModel = LineParser.getInstance().getVendorModel();
-        Vendor currVendor = pv.peek();
-        switch (line){
-            case VENDOR_LINE:
-                // check to see if we have contigious vendors to write
-                while (currVendor != null  && (comp = vendorModel.compareTo(currVendor)) == WRITE) {
-                    writer.write(currVendor.toString() + "\n");
-                    Logger.getInstance().println("new output at line " + writer.getLineNumber() + ": " + currVendor);
-                    pv.poll();
-                    currVendor = pv.peek();
-                }
-                if(comp == EQUAL) pv.poll();
 
-
-            break;
-            case DEVICE_LINE:
-                Device currDevice;
-                while (currVendor.size() > 0 && (comp=vendorModel.compareTo(currVendor)) == WRITE) {
-                    currDevice = currVendor.getDevices().poll();
-                    writer.write(currDevice.toString() + "\n");
-                    Logger.getInstance().println("new output at line " + writer.getLineNumber() + ": " + currDevice);
-                    if(currVendor.size() == 0) pv.poll();
-                }
-                if(comp == EQUAL){
-                    pv.peek().getDevices().poll();
-                    if(currVendor.size() == 0) pv.poll();
-                }
-
-            break;
-            case SUBSYSTEM_LINE:
-                SubSystem currSub;
-                while( currVendor.size() > 0 && currVendor.getDevices().peek().size() > 0 && (comp = vendorModel.compareTo(currVendor)) == WRITE) {
-                    currSub = currVendor.getDevices().peek().getSubSystems().poll();
-                    writer.write(currSub.toString() + "\n");
-                    Logger.getInstance().println("new output at line " + writer.getLineNumber() + ": " + currSub);
-                    if (currVendor.getDevices().peek().getSubSystems().size() == 0) currVendor.getDevices().poll();
-                    if (currVendor.size() == 0) pv.poll();
-                }
-                if(comp == EQUAL){
-                    pv.peek().getDevices().peek().getSubSystems().poll();
-                    if (currVendor.getDevices().peek().getSubSystems().size() == 0) currVendor.getDevices().poll();
-                    if (currVendor.size() == 0) pv.poll();
-                }
-
-        }
-    }
-    private void writePendingClasses(PriorityQueue<Class> pc, LineCountWriter writer, LineParser.LineType line) throws Exception{
-        int comp = CONTINUE;
-        VendorModel vendorModel = LineParser.getInstance().getVendorModel();
-        switch (line) {
-            case CLASS_LINE:
-                break;
-            case SUB_CLASS_LINE:
-                break;
-            case PROG_IF_LINE:
-                break;
-        }
-    }
-
-    private void update(PriorityQueue<Vendor> pv, PriorityQueue<Class> pc, BufferedReader reader, LineCountWriter writer) throws Exception
-    {
-        int lineNum = 1;
-        LineParser.LineType lineType;
-        for(String line: reader.lines().collect(Collectors.toList())) {
-
-            // Step 2 - parse that line
-            lineType=LineParser.getInstance().parseLine(line, lineNum);
-            // Step 3 - write pending objects to pci.ids
-            if(pv != null && pv.size() > 0 && LineParser.isVendorModel(lineType)){
-                writePendingVendors(pv, writer, lineType);
-            }else if (pc != null && pc.size() > 0 && LineParser.isClassModel(lineType)){
-                writePendingClasses(pc, writer, lineType);
-            }else if(lineType == LineParser.LineType.INVALID_LINE){
-                Logger.getInstance().println("line " + lineNum + ": invalid line, please correct before continuing");
-                return;
-            }
-            writer.write(line + "\n");
-            lineNum++;
-
-        }
-
-    }
     @Override
     public void run() {
-
-        // This function builds our class and vendor models
 
         try {
             BufferedReader in = new BufferedReader(new FileReader(inputPCIidFile));
@@ -187,7 +103,7 @@ public class PIU implements Runnable{
             PriorityQueue<Class> pendingClasses = buildPendingClasses();
 
 
-            update(pendingVendors, pendingClasses, in, out);
+            Updater.update(pendingVendors, pendingClasses, in, out);
 
             out.close();
             in.close();
