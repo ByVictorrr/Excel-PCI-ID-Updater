@@ -20,45 +20,36 @@ public class VendorAdapter extends TypeAdapter<Vendor> {
     @Override
     public Vendor read(JsonReader reader)throws IOException
     {
-            Vendor v = new Vendor();
-            reader.beginObject();
-            String fieldname = null;
-            Device d;
-            int id;
-            while(reader.hasNext()){
+        Vendor v = new Vendor();
+        String fieldName = null;
+        Device d;
+        int id;
+        String name;
+
+        reader.beginObject();
+        while(reader.hasNext()){
                 JsonToken token = reader.peek();
-                if(token.equals(JsonToken.NAME)){
-                    fieldname = reader.nextName();
-                }
-                if(VENDOR_ID_KEY.equals(fieldname)){
-                    reader.peek();
+                if(token.equals(JsonToken.NAME)) fieldName = reader.nextName();
+
+                if(VENDOR_ID_KEY.equals(fieldName)){
                     if((id=Integer.parseInt(reader.nextString(),16)) > 0xffff || id < 0){
-                        System.err.println("To high of an id");
+                        System.err.println("Vendor : " + Integer.toHexString(id) + " is an invalid vendor");
                         v=null;
                     }else {
                         v.setVendor(id);
                     }
                 }
 
-                if(VENDOR_NAME_KEY.equals(fieldname)){
-                    reader.peek();
-                    if(v != null) v.setName(reader.nextString());
+                if(VENDOR_NAME_KEY.equals(fieldName)){
+                    name = reader.nextString();
+                    if(v != null) v.setName(name);
                 }
-                if(VENDOR_DEVICES_KEY.equals(fieldname)){
-                    reader.peek();
+                if(VENDOR_DEVICES_KEY.equals(fieldName)){
                     reader.beginArray();
                     while(reader.hasNext()){
-                        JsonToken dt = reader.peek();
                         TypeAdapter<Device> deviceTypeAdapter = new Gson().getAdapter(Device.class);
-                        // case 1 - first device
-                        if(v != null && v.getDevices() == null){
-                           v.setDevices(new PriorityQueue<>());
-                        }
-                        if((d = deviceTypeAdapter.read(reader)) != null && v!=null){
-                           v.addDevice(d);
-                        }
-
-
+                        if(v != null && v.getDevices() == null) v.setDevices(new PriorityQueue<>());
+                        if((d = deviceTypeAdapter.read(reader)) != null && v!=null) v.addDevice(d);
                     }
                     reader.endArray();
                 }
