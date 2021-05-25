@@ -1,16 +1,13 @@
 package adapters;
 
-import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import models.ProgIF;
-import models.SubClass;
 import utilities.Logger;
 
 import java.io.IOException;
-import java.util.PriorityQueue;
 
 public class ProgIFAdapter extends TypeAdapter<ProgIF>{
     public static final String PROGIF_ID_KEY = "subClass";

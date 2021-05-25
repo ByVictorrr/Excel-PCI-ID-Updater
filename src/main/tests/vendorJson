@@ -69,5 +69,15 @@
                 ]
             }
         ]
+    },
+    {
+        "vendor": 0010,
+        "name": "hi vic",
+        "devices": [
+            {
+                "device": 0102,
+                "name": "device vic"
+            }
+        ]
     }
 ]

@@ -1,19 +1,18 @@
 package models;
 
 import adapters.ClassAdapter;
-import adapters.DeviceAdapter;
 import com.google.gson.annotations.JsonAdapter;
 
 import java.util.PriorityQueue;
 
 @JsonAdapter(ClassAdapter.class)
 public class Class implements Comparable<Class>{
-    private int _class;
+    private Integer _class;
     private String name;
     private PriorityQueue<SubClass> subClasses;
 
     public Class(){
-        this._class = -1;
+        this._class = null;
         this.name = null;
         this.subClasses = null;
     }
@@ -52,11 +51,11 @@ public class Class implements Comparable<Class>{
     }
 
 
-    public int get_class() {
+    public Integer get_class() {
         return _class;
     }
 
-    public void set_class(int _class) {
+    public void set_class(Integer _class) {
         this._class = _class;
     }
 

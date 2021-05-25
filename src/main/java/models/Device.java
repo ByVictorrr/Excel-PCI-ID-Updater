@@ -6,10 +6,21 @@ import com.google.gson.annotations.JsonAdapter;
 import java.util.PriorityQueue;
 @JsonAdapter(DeviceAdapter.class)
 public class Device implements Comparable<Device>{
-    private int device;
+    private Integer device;
     private String name;
     private PriorityQueue<SubSystem>subSystems;
 
+    public Device(){
+        this.device = null;
+        this.name = null;
+        this.subSystems = null;
+    }
+
+    public Device(Integer device, String name) {
+        this.device = device;
+        this.name = name;
+        this.subSystems = null;
+    }
 
     @Override
     public int compareTo(Device o) {
@@ -31,7 +42,7 @@ public class Device implements Comparable<Device>{
         return ret;
     }
 
-    public int getDevice() {
+    public Integer getDevice() {
         return device;
     }
 
@@ -43,7 +54,7 @@ public class Device implements Comparable<Device>{
         return subSystems;
     }
 
-    public void setDevice(int device) {
+    public void setDevice(Integer device) {
         this.device = device;
     }
 

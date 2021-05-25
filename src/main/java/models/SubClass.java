@@ -1,6 +1,5 @@
 package models;
 
-import adapters.ClassAdapter;
 import adapters.SubClassAdapter;
 import com.google.gson.annotations.JsonAdapter;
 
@@ -8,11 +7,11 @@ import java.util.PriorityQueue;
 
 @JsonAdapter(SubClassAdapter.class)
 public class SubClass implements Comparable<SubClass>{
-    private int subClass;
+    private Integer subClass;
     private String name;
     private PriorityQueue<ProgIF> progIFS;
     public SubClass(){
-        subClass = -1;
+        subClass = null;
         name = null;
         progIFS = null;
     }
@@ -34,11 +33,11 @@ public class SubClass implements Comparable<SubClass>{
     }
 
 
-    public int getSubClass() {
+    public Integer getSubClass() {
         return subClass;
     }
 
-    public void setSubClass(int subClass) {
+    public void setSubClass(Integer subClass) {
         this.subClass = subClass;
     }
 

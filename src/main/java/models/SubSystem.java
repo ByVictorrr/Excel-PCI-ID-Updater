@@ -5,12 +5,13 @@ import com.google.gson.annotations.JsonAdapter;
 
 @JsonAdapter(SubSystemAdapter.class)
 public class SubSystem implements Comparable<SubSystem>{
-    private int subVendor, subDevice;
+    private Integer subVendor;
+    private Integer subDevice;
     private String name;
     public SubSystem()
     {
-        this.subVendor = -1;
-        this.subDevice = -1;
+        this.subVendor = null;
+        this.subDevice = null;
         this.name = null;
     }
 
@@ -46,11 +47,11 @@ public class SubSystem implements Comparable<SubSystem>{
     }
 
 
-    public int getSubVendor() {
+    public Integer getSubVendor() {
         return subVendor;
     }
 
-    public int getSubDevice() {
+    public Integer getSubDevice() {
         return subDevice;
     }
 
@@ -58,11 +59,11 @@ public class SubSystem implements Comparable<SubSystem>{
         return name;
     }
 
-    public void setSubVendor(int subVendor) {
+    public void setSubVendor(Integer subVendor) {
         this.subVendor = subVendor;
     }
 
-    public void setSubDevice(int subDevice) {
+    public void setSubDevice(Integer subDevice) {
         this.subDevice = subDevice;
     }
 

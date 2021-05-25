@@ -1,16 +1,14 @@
 package models;
 
-import adapters.DeviceAdapter;
 import adapters.VendorAdapter;
 import com.google.gson.annotations.JsonAdapter;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.PriorityQueue;
 
 
 @JsonAdapter(VendorAdapter.class)
 public class Vendor implements Comparable<Vendor>{
-    private int vendor;
+    private Integer vendor;
     private String name;
     private PriorityQueue<Device> devices;
 
@@ -28,7 +26,7 @@ public class Vendor implements Comparable<Vendor>{
         this.devices = null;
     }
 
-    public int getVendor() {
+    public Integer getVendor() {
         return vendor;
     }
 
@@ -40,7 +38,7 @@ public class Vendor implements Comparable<Vendor>{
         return devices;
     }
 
-    public void setVendor(int vendor) {
+    public void setVendor(Integer vendor) {
         this.vendor = vendor;
     }
 

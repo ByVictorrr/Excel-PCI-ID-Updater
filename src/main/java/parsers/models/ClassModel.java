@@ -1,10 +1,20 @@
 package parsers.models;
 
-import models.SubSystem;
+import models.*;
+import models.Class;
+import parsers.models.classmodels.ClassLine;
+import parsers.models.classmodels.ProgIFLine;
+import parsers.models.classmodels.SubClassLine;
 
 public class ClassModel {
-    private Integer _class, subClass, progIF;
-    private String className, subClassName, progIFName;
+    private ClassLine _class;
+    private SubClassLine subClass;
+    private ProgIFLine progIF;
+
+    public static final int CONTINUE =  -1;
+    public static final int EQUAL =  0; // EQUAL mean continue unless overiding enabled
+    public static final int WRITE =  1;
+
     private static ClassModel instance;
 
     private ClassModel(){
@@ -31,77 +41,45 @@ public class ClassModel {
         this.subClass = null;
         this.progIF = null;
     }
+    public int compareTo(SubClass to) {
 
-
-    /*
-    public int compareTo(){
-        int ret = 0;
-        if(this.sVendor < to.getSubVendor()) {
-            ret = CONTINUE;
-        }else if(this.sVendor == to.getSubVendor()) {
-            if (this.sDevice < to.getSubDevice()) {
+        int ret = WRITE;
+        /*
+        if(this.subClass.getSubClass() < to.getSubClass()) {
+            ret = CONTINUE; // means continue and dont write ye
+        }else if( this.subClass.getSubClass() == to.getSubClass()){
+            if(this.size() == 2){
+                ret = EQUAL;
+            }else if(to.getSubSystems().size() == 0){
                 ret = CONTINUE;
-            } else if (this.sDevice == to.getSubDevice()){
-                return EQUAL;
-            }else {
-                ret = WRITE;
+            }else{
+                ret = this.compareTo(to.getSubSystems().peek());
             }
         }else{
             ret = WRITE;
         }
+
+         */
         return ret;
     }
-     */
 
-    public Integer get_class() {
-        return _class;
-    }
 
-    public void set_class(Integer _class) {
-        this._class = _class;
-    }
 
-    public Integer getSubClass() {
-        return subClass;
-    }
+    public int compareTo(Class to){
 
-    public void setSubClass(Integer subClass) {
-        this.subClass = subClass;
-    }
+        int ret = CONTINUE;
+        if(this._class.get_class() < to.get_class()) {
+            ret = CONTINUE;
+        }else if( this._class.get_class() == to.get_class()){
+            if(to.getSubClasses().size() > 0){
+                ret = this.compareTo(to.getSubClasses().peek());
+            }else if(to.getSubClasses().size() == 0){
+                ret = EQUAL;
+            }
+        }else{
+            ret = WRITE; // means write vendor
+        }
 
-    public Integer getProgIF() {
-        return progIF;
-    }
-
-    public void setProgIF(Integer progIF) {
-        this.progIF = progIF;
-    }
-
-    public static void setInstance(ClassModel instance) {
-        ClassModel.instance = instance;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public String getSubClassName() {
-        return subClassName;
-    }
-
-    public void setSubClassName(String subClassName) {
-        this.subClassName = subClassName;
-    }
-
-    public String getProgIFName() {
-        return progIFName;
-    }
-
-    public void setProgIFName(String progIFName) {
-        this.progIFName = progIFName;
+        return ret;
     }
 }

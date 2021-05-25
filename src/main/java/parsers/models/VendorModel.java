@@ -51,7 +51,7 @@ public class VendorModel{
 
 
     public int compareTo(SubSystem to){
-        int ret = 0;
+        int ret = WRITE;
         if(this.sub.getvId() < to.getSubVendor()) {
             ret = CONTINUE;
         }else if(this.sub.getvId() == to.getSubVendor()) {
@@ -69,19 +69,15 @@ public class VendorModel{
     }
 
     public int compareTo(Device to){
-        int ret = WRITE;
+        int ret = CONTINUE;
         if(this.dev.getId() < to.getDevice()) {
-            ret = CONTINUE; // means continue and dont write ye
+            ret = CONTINUE;
         }else if( this.dev.getId() == to.getDevice()){
-            if(this.size() == 2){
-                ret = EQUAL;
-            }else if(to.getSubSystems().size() == 0){
-                ret = CONTINUE;
-            }else{
+            if(to.size() > 0 && this.sub != null)
                 ret = this.compareTo(to.getSubSystems().peek());
-            }
-        }else{
-            ret = WRITE;
+            else if(to.getSubSystems().isEmpty() && this.sub != null)
+                ret = EQUAL;
+            else ret = WRITE;
         }
         return ret;
     }
@@ -89,19 +85,16 @@ public class VendorModel{
 
     public int compareTo(Vendor to){
 
-        int ret = 0;
-        // Case 0 - equal meaning size == 1 and samw vendor
-        // Case 1 - if lined vendor is less than the pending vendor
+        int ret = CONTINUE;
         if(this.ven.getId() < to.getVendor()) {
-            ret = CONTINUE; // means continue and dont write yet
+            ret = CONTINUE;
         }else if( this.ven.getId() == to.getVendor()){
-            // Case where we havent read a device yet
-            if(this.size() == 1){
-                ret = EQUAL;
-            }else if(to.getDevices().size() == 0){
-                ret = CONTINUE;
-            }else {
+            if(to.size() > 0 && this.dev != null){
                 ret = this.compareTo(to.getDevices().peek());
+            }else if(to.getDevices().isEmpty() && this.dev == null) {
+                ret = EQUAL;
+            }else{
+                ret = CONTINUE;
             }
         }else{
             ret = WRITE; // means write vendor

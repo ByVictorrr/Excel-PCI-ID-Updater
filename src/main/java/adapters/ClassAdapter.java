@@ -6,9 +6,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import models.Class;
-import models.Device;
 import models.SubClass;
-import models.Vendor;
 import utilities.Logger;
 
 import java.io.IOException;

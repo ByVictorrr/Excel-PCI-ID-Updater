@@ -1,13 +1,15 @@
 [
     {
-        "class": ,
-        "name":,
-        "subclasses": [
+        "class": 0d,
+        "name": "hi",
+        "subClasses": [
                 {
+                    "subClass": 02,
+                    "name": "victor"
 
                 }
 
-        ],
+        ]
 
     }
 

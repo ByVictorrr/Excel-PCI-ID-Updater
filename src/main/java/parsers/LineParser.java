@@ -155,6 +155,7 @@ public class LineParser {
     }
 
     private void parseProgIFLine(Matcher groups, int lineNum) throws LineOutOfOrderException{
+        /*
         if(this.classModel.get_class() == null && this.classModel.getSubClass() == null){
            throw new LineOutOfOrderException("There is no associated class and subclass with the prog-if line (fix)", lineNum) ;
         }else if(this.classModel.get_class() == null){
@@ -165,8 +166,11 @@ public class LineParser {
             classModel.setProgIF(Integer.parseInt(groups.group(PROG_IF_ID_GROUP), EXPECTED_BASE));
             classModel.setProgIFName(groups.group(PROG_IF_NAME_GROUP));
         }
+
+         */
     }
     private void parseSubClassLine(Matcher groups, int lineNum) throws LineOutOfOrderException{
+        /*
         if(this.classModel.get_class() == null){
             throw new LineOutOfOrderException("There is no associated class and subclass with the prog-if line (fix)", lineNum) ;
         }else{
@@ -175,11 +179,15 @@ public class LineParser {
             classModel.setSubClass(Integer.parseInt(groups.group(SUB_CLASS_ID_GROUP), EXPECTED_BASE));
             classModel.setSubClassName(groups.group(SUB_CLASS_NAME_GROUP));
         }
+        */
     }
     private void parseClassLine(Matcher groups, int lineNum){
         classModel.resetModel();
+        /*
         classModel.set_class(Integer.parseInt(groups.group(CLASS_ID_GROUP),EXPECTED_BASE));
         classModel.setClassName(groups.group(CLASS_NAME_GROUP));
+
+         */
     }
 
     /**

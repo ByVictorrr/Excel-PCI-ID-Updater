@@ -65,6 +65,22 @@ public class PIU implements Runnable{
     }
     private PriorityQueue<Class> buildPendingClasses() throws Exception{
         PriorityQueue<Class> pc = null;
+        if(options.classEntry != null && options.classJSON != null){
+            pc = new GsonBuilder().setLenient().create().fromJson(
+                    new FileReader(options.classJSON),
+                    new TypeToken<PriorityQueue<Class>>(){}.getType()
+            );
+            pc.add(new Class()); // parse after
+        }else if(options.classJSON != null){
+            pc = new GsonBuilder().setLenient().create().fromJson(
+                    new FileReader(options.classJSON),
+                    new TypeToken<PriorityQueue<Class>>(){}.getType()
+            );
+        }else if(options.classEntry != null){
+            pc = new PriorityQueue<>();
+            pc.add(new Class());
+
+        }
         return pc;
     }
 
@@ -86,6 +102,8 @@ public class PIU implements Runnable{
                     pv.poll();
                     currVendor = pv.peek();
                 }
+                if(comp == EQUAL) pv.poll();
+
 
             break;
             case DEVICE_LINE:
@@ -96,6 +114,10 @@ public class PIU implements Runnable{
                     Logger.getInstance().println("new output at line " + writer.getLineNumber() + ": " + currDevice);
                     if(currVendor.size() == 0) pv.poll();
                 }
+                if(comp == EQUAL){
+                    pv.peek().getDevices().poll();
+                    if(currVendor.size() == 0) pv.poll();
+                }
 
             break;
             case SUBSYSTEM_LINE:
@@ -104,10 +126,15 @@ public class PIU implements Runnable{
                     currSub = currVendor.getDevices().peek().getSubSystems().poll();
                     writer.write(currSub.toString() + "\n");
                     Logger.getInstance().println("new output at line " + writer.getLineNumber() + ": " + currSub);
-                    if (currVendor.size() == 0) pv.poll();
                     if (currVendor.getDevices().peek().getSubSystems().size() == 0) currVendor.getDevices().poll();
                     if (currVendor.size() == 0) pv.poll();
                 }
+                if(comp == EQUAL){
+                    pv.peek().getDevices().peek().getSubSystems().poll();
+                    if (currVendor.getDevices().peek().getSubSystems().size() == 0) currVendor.getDevices().poll();
+                    if (currVendor.size() == 0) pv.poll();
+                }
+
         }
     }
     private void writePendingClasses(PriorityQueue<Class> pc, LineCountWriter writer, LineParser.LineType line) throws Exception{
@@ -115,7 +142,6 @@ public class PIU implements Runnable{
         VendorModel vendorModel = LineParser.getInstance().getVendorModel();
         switch (line) {
             case CLASS_LINE:
-
                 break;
             case SUB_CLASS_LINE:
                 break;
@@ -126,7 +152,7 @@ public class PIU implements Runnable{
 
     private void update(PriorityQueue<Vendor> pv, PriorityQueue<Class> pc, BufferedReader reader, LineCountWriter writer) throws Exception
     {
-        int lineNum = 0;
+        int lineNum = 1;
         LineParser.LineType lineType;
         for(String line: reader.lines().collect(Collectors.toList())) {
 
@@ -138,7 +164,7 @@ public class PIU implements Runnable{
             }else if (pc != null && pc.size() > 0 && LineParser.isClassModel(lineType)){
                 writePendingClasses(pc, writer, lineType);
             }else if(lineType == LineParser.LineType.INVALID_LINE){
-                System.err.println("line " + lineNum + ": invalid line, please correct before continuing");
+                Logger.getInstance().println("line " + lineNum + ": invalid line, please correct before continuing");
                 return;
             }
             writer.write(line + "\n");
@@ -155,7 +181,7 @@ public class PIU implements Runnable{
         try {
             BufferedReader in = new BufferedReader(new FileReader(inputPCIidFile));
             LineCountWriter out = new LineCountWriter(new FileWriter(outputPCIidFile));
-            Logger.getInstance().init(new FileOutputStream("C:\\Users\\delaplai\\Excel-PCI-ID-Updater\\src\\main\\tests\\logs"));
+            //Logger.getInstance().init(new FileOutputStream("C:\\Users\\delaplai\\Excel-PCI-ID-Updater\\src\\main\\tests\\logs"));
 
             PriorityQueue<Vendor> pendingVendors = buildPendingVendors();
             PriorityQueue<Class> pendingClasses = buildPendingClasses();
@@ -167,7 +193,7 @@ public class PIU implements Runnable{
             in.close();
         }catch (Exception e){
             e.printStackTrace();
-            System.out.println(e);
+            Logger.getInstance().println(e);
         }
 
     }
