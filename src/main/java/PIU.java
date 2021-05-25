@@ -23,15 +23,6 @@ public class PIU implements Runnable{
     @CommandLine.Parameters(index = "1", description = "This is the output pci.ids file")
     private File outputPCIidFile;
 
-    @CommandLine.Option(names={"-v"}, description = "Override the vendor names of the pending entries")
-    private boolean overrideVendors = false;
-
-    @CommandLine.Option(names={"-d"}, description = "Override the device names of the pending entries")
-    private boolean overrideDevices = false;
-
-    @CommandLine.Option(names={"-s"}, description = "Override the subsystem names of the pending entries")
-    private boolean overrideSubSystems = false;
-
     @CommandLine.ArgGroup(exclusive = true, multiplicity = "1")
     private ExclusiveVendor exclusiveVendor;
     /*
@@ -39,6 +30,7 @@ public class PIU implements Runnable{
     private ExclusiveClass exclusiveClass;
 
      */
+    private PrintStream logger = System.err;
 
 
     static class ExclusiveVendor{
@@ -85,24 +77,20 @@ public class PIU implements Runnable{
     private void writePendingVendors(PriorityQueue<Vendor> pv, LineCountWriter writer, LineParser.LineType line) throws Exception{
         int comp = CONTINUE;
         VendorModel vendorModel = LineParser.getInstance().getVendorModel();
+        Vendor currVendor = pv.peek();
         switch (line){
             case VENDOR_LINE: {
-                Vendor currPending;
-                // While pv isnt empty we && the compare says
-                while (pv.size() > 0  && (comp = vendorModel.compareTo(currPending = pv.peek())) == WRITE) {
-                    writer.write(currPending.toString() + "\n");
+                // check to see if we have contigious vendors to write
+                while (pv.size() > 0  && (comp = vendorModel.compareTo(currVendor)) == WRITE) {
+                    writer.write(currVendor.toString() + "\n");
+                    logger.println("new output at line " + writer.getLineNumber() + ": " + currVendor);
                     pv.poll();
-                    System.out.println("new output at line " + writer.getLineNumber() + ": " + currPending);
+                    currVendor = pv.peek();
                 }
-                /* If overriding the vendor -v option is selected */
-                if(pv.size() > 0 && comp == EQUAL && overrideVendors) {
-                    writer.write(pv.poll().toLine() + "\n");
-                    return;
-                }
+
             }
             break;
-            case DEVICE_LINE: {
-                Vendor currVendor = pv.peek();
+            case DEVICE_LINE:
                 while (currVendor.size() > 0 && (comp=vendorModel.compareTo(currVendor)) == WRITE) {
                     writer.write(currVendor.getDevices().poll().toString());
                     // Check if this vendor is empty after getting rid of device
@@ -111,18 +99,9 @@ public class PIU implements Runnable{
                     }
                 }
 
-                // Case 1 - no more devices, thus vendor has a size() = 0
-                if( currVendor.size() > 0 && comp == EQUAL && overrideDevices) {
-                    writer.write(currVendor.getDevices().poll().toLine() + "\n");
-                    if(currVendor.size() == 0)
-                        pv.poll();
-                    return; // dont write next line
-                }
-            }
             break;
-            case SUBSYSTEM_LINE: {
-                Vendor currVendor = pv.peek(); // guarenteed
-                int overRideSub = CONTINUE;
+            case SUBSYSTEM_LINE:
+
                 while( currVendor.size() > 0 && currVendor.getDevices().peek().size() > 0 && (comp = vendorModel.compareTo(currVendor)) == WRITE) {
                     writer.write(currVendor.getDevices().peek().getSubSystems().poll().toString() + "\n");
                     if (currVendor.getDevices().peek().getSubSystems().size() == 0) {
@@ -132,24 +111,20 @@ public class PIU implements Runnable{
                         pv.poll();
                     }
                 }
-                // Case 1 - no more devices, thus vendor has a size() = 0
-                if ( currVendor.size() > 0 && currVendor.getDevices().peek().size() > 0 && comp == EQUAL && overrideSubSystems) {
-                    writer.write(currVendor.getDevices().poll().toLine() + "\n");
-                    if (currVendor.getDevices().peek().getSubSystems().size() == 0) {
-                        currVendor.getDevices().poll();
-                    }
-                    if (currVendor.size() == 0) {
-                        pv.poll();
-                    }
-                    return; // dont write next line
-                }
-
-            }
-
         }
     }
     private void writePendingClasses(PriorityQueue<Classs> pc, LineCountWriter writer, LineParser.LineType line) throws Exception{
+        int comp = CONTINUE;
+        VendorModel vendorModel = LineParser.getInstance().getVendorModel();
+        switch (line) {
+            case CLASS_LINE:
 
+                break;
+            case SUB_CLASS_LINE:
+                break;
+            case PROG_IF_LINE:
+                break;
+        }
     }
 
     private void update(PriorityQueue<Vendor> pv, PriorityQueue<Classs> pc, BufferedReader reader, LineCountWriter writer) throws Exception

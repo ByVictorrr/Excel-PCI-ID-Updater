@@ -1,5 +1,9 @@
 package models;
 
+import adapters.SubSystemAdapter;
+import com.google.gson.annotations.JsonAdapter;
+
+@JsonAdapter(SubSystemAdapter.class)
 public class SubSystem implements Comparable<SubSystem>{
     private int subVendor, subDevice;
     private String name;

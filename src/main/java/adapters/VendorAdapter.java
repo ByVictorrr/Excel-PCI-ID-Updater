@@ -23,31 +23,41 @@ public class VendorAdapter extends TypeAdapter<Vendor> {
             Vendor v = new Vendor();
             reader.beginObject();
             String fieldname = null;
+            Device d;
+            int id;
             while(reader.hasNext()){
                 JsonToken token = reader.peek();
                 if(token.equals(JsonToken.NAME)){
                     fieldname = reader.nextName();
                 }
                 if(VENDOR_ID_KEY.equals(fieldname)){
-                    token = reader.peek();
-                    v.setVendor(Integer.parseInt(reader.nextString() ,16));
+                    reader.peek();
+                    if((id=Integer.parseInt(reader.nextString(),16)) > 0xffff || id < 0){
+                        System.err.println("To high of an id");
+                        v=null;
+                    }else {
+                        v.setVendor(id);
+                    }
                 }
 
                 if(VENDOR_NAME_KEY.equals(fieldname)){
-                    token = reader.peek();
-                    v.setName(reader.nextString());
+                    reader.peek();
+                    if(v != null) v.setName(reader.nextString());
                 }
                 if(VENDOR_DEVICES_KEY.equals(fieldname)){
-                    token = reader.peek();
+                    reader.peek();
                     reader.beginArray();
                     while(reader.hasNext()){
                         JsonToken dt = reader.peek();
                         TypeAdapter<Device> deviceTypeAdapter = new Gson().getAdapter(Device.class);
                         // case 1 - first device
-                        if(v.getDevices() == null){
+                        if(v != null && v.getDevices() == null){
                            v.setDevices(new PriorityQueue<>());
                         }
-                        v.addDevice(deviceTypeAdapter.read(reader));
+                        if((d = deviceTypeAdapter.read(reader)) != null && v!=null){
+                           v.addDevice(d);
+                        }
+
 
                     }
                     reader.endArray();

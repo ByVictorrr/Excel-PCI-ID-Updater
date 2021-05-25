@@ -23,31 +23,41 @@ public class DeviceAdapter extends TypeAdapter<Device> {
         Device d = new Device();
         reader.beginObject();
         String fieldname = null;
+        int id;
+        SubSystem s;
         while(reader.hasNext()){
             JsonToken token = reader.peek();
             if(token.equals(JsonToken.NAME)){
                 fieldname = reader.nextName();
             }
             if(DEVICE_ID_KEY.equals(fieldname)){
-                token = reader.peek();
-                d.setDevice(Integer.parseInt(reader.nextString() ,16));
+                reader.peek();
+                if((id=Integer.parseInt(reader.nextString(), 16)) > 0xffff || id < 0){
+                   System.out.println("Incorrect id");
+                   d = null;
+                }else {
+                    d.setDevice(id);
+                }
             }
 
             if(DEVICE_NAME_KEY.equals(fieldname)){
-                token = reader.peek();
-                d.setName(reader.nextString());
+                reader.peek();
+                if(d != null)
+                    d.setName(reader.nextString());
             }
             if(DEVICE_SUBSYSTEMS_KEY.equals(fieldname)){
-                token = reader.peek();
+                reader.peek();
                 reader.beginArray();
                 while(reader.hasNext()){
                     JsonToken dt = reader.peek();
                     TypeAdapter<SubSystem> subSystemTypeAdapter = new Gson().getAdapter(SubSystem.class);
                     // case 1 - first device
-                    if(d.getSubSystems() == null){
+                    if(d != null && d.getSubSystems() == null){
                         d.setSubSystems(new PriorityQueue<>());
                     }
-                    d.addSubSystem(subSystemTypeAdapter.read(reader));
+                    if((s=subSystemTypeAdapter.read(reader)) != null && d != null){
+                        d.addSubSystem(s);
+                    }
                 }
                 reader.endArray();
             }

@@ -13,7 +13,7 @@
                         "name" : "hi"
                     },
                     {
-                        "subVendor": 4116,
+                        "subVendor": ffff,
                         "subDevice": 1023,
                         "name" : "FC EN0Y/EN12 PCIe2 LP 8 Gb 2-port Fibre Channel Adapter for POWER"
                     }
@@ -29,7 +29,7 @@
         ]
     },
     {
-        "vendor": ffffa,
+        "vendor": ffff,
         "name": "victor",
         "devices": []
     }
