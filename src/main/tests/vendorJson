@@ -1,35 +1,33 @@
 [
     {
-        "vendor": 4215,
+        "vendor": "4215",
         "name" : "QLogicz",
         "devices": [
             {
-                "device": 9522,
+                "device": "9522",
                 "name" : "ISP2532-based 8Gb Fibre Channel to PCI Express HBA",
                 "subSystems":[
                     {
-                        "subVendor": 4116,
-                        "subDevice": 1054,
+                        "subVendor": "4116",
+                        "subDevice": "1054",
                         "name" : "hi"
                     },
                     {
-                        "subVendor": ffff,
-                        "subDevice": 1023,
+                        "subVendor": "ffff",
+                        "subDevice": "1023",
                         "name" : "FC EN0Y/EN12 PCIe2 LP 8 Gb 2-port Fibre Channel Adapter for POWER"
                     }
                 ]
 
             },
             {
-                "device": ffffa,
-                "name": "ISPLess",
-                "subSystems": []
-
+                "device": "ffff",
+                "name": "ISPLess"
             }
         ]
     },
     {
-        "vendor": ffff,
+        "vendor": "ffff",
         "name": "victor",
         "devices": []
     }

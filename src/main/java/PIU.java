@@ -1,3 +1,4 @@
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import models.Classs;
 import models.Vendor;
@@ -49,12 +50,12 @@ public class PIU implements Runnable{
     private PriorityQueue<Vendor> buildPendingVendors() throws Exception{
         PriorityQueue<Vendor> pv = null;
         if(exclusiveVendor.piuEntry != null && exclusiveVendor.piuJSON != null){
-            pv = new Gson().fromJson(
+            pv = new GsonBuilder().setLenient().create().fromJson(
                     new FileReader(exclusiveVendor.piuJSON), new TypeToken<PriorityQueue<Vendor>>(){}.getType()
             );
             pv.add(new Vendor()); // parse here
         }else if(exclusiveVendor.piuJSON != null){
-            pv = new Gson().fromJson(
+            pv = new GsonBuilder().setLenient().create().fromJson(
                 new FileReader(exclusiveVendor.piuJSON), new TypeToken<PriorityQueue<Vendor>>(){}.getType()
             );
         }else if(exclusiveVendor.piuEntry != null){
@@ -160,9 +161,9 @@ public class PIU implements Runnable{
             LineCountWriter out = new LineCountWriter(new FileWriter(outputPCIidFile));
 
             PriorityQueue<Vendor> pendingVendors = buildPendingVendors();
-            PriorityQueue<Classs> pendingClassses = buildPendingClasses();
+            PriorityQueue<Classs> pendingClasses = buildPendingClasses();
 
-            update(pendingVendors, pendingClassses, in, out);
+            update(pendingVendors, pendingClasses, in, out);
 
             out.close();
             in.close();

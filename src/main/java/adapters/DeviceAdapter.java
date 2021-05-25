@@ -39,21 +39,22 @@ public class DeviceAdapter extends TypeAdapter<Device> {
                 }else {
                     d.setDevice(id);
                 }
-            }
-
-            if(DEVICE_NAME_KEY.equals(fieldName)){
+            } else if(DEVICE_NAME_KEY.equals(fieldName)){
                 name = reader.nextString();
-                if(d != null)
-                    d.setName(name);
-            }
-            if(DEVICE_SUBSYSTEMS_KEY.equals(fieldName)){
-                reader.beginArray();
-                while(reader.hasNext()){
-                    TypeAdapter<SubSystem> subSystemTypeAdapter = new Gson().getAdapter(SubSystem.class);
-                    if(d != null && d.getSubSystems() == null) d.setSubSystems(new PriorityQueue<>());
-                    if((s=subSystemTypeAdapter.read(reader)) != null && d != null) d.addSubSystem(s);
+                if(d != null) d.setName(name);
+            }else if(DEVICE_SUBSYSTEMS_KEY.equals(fieldName)){
+                if(reader.peek() == JsonToken.BEGIN_ARRAY) {
+                    reader.beginArray();
+                    while (reader.hasNext()) {
+                        TypeAdapter<SubSystem> subSystemTypeAdapter = new Gson().getAdapter(SubSystem.class);
+                        if (d != null && d.getSubSystems() == null) d.setSubSystems(new PriorityQueue<>());
+                        if ((s = subSystemTypeAdapter.read(reader)) != null && d != null) d.addSubSystem(s);
+                    }
+                    reader.endArray();
+                }else if(reader.peek() == JsonToken.NULL){
+                    reader.nextNull();
                 }
-                reader.endArray();
+
             }
         }
         reader.endObject();

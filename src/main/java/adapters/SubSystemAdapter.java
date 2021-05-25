@@ -30,27 +30,24 @@ public class SubSystemAdapter extends TypeAdapter<SubSystem> {
             if(token.equals(JsonToken.NAME)){
                 fieldName = reader.nextName();
             }
-            if(SUBSYSTEM_VENDOR_KEY.equals(fieldName)){
-                if((vID = Integer.parseInt(reader.nextString() ,16)) > 0xFFFF || vID < 0) {
+            if(SUBSYSTEM_VENDOR_KEY.equals(fieldName)) {
+                if ((vID = Integer.parseInt(reader.nextString(), 16)) > 0xFFFF || vID < 0) {
                     System.err.println("Subsystem Vendor : " + Integer.toHexString(vID) + " is an invalid sub-vendor");
                     s = null;
-                }else {
+                } else {
                     s.setSubVendor(vID);
                 }
-            }
 
-            if(SUBSYSTEM_DEVICE_KEY.equals(fieldName)){
+            }else if(SUBSYSTEM_DEVICE_KEY.equals(fieldName)){
                 if((dID = Integer.parseInt(reader.nextString() ,16)) > 0xFFFF || dID < 0) {
                     System.err.println("Subsystem Device : " + Integer.toHexString(dID) + " is an invalid sub-device");
                     s = null;
                 }else {
                     s.setSubDevice(dID);
                 }
-            }
-
-            if(SUBSYSTEM_NAME_KEY.equals(fieldName)){
+            }else if(SUBSYSTEM_NAME_KEY.equals(fieldName)){
                 name = reader.nextString();
-               if(s != null) s.setName(name);
+                if(s != null) s.setName(name);
             }
         }
         reader.endObject();

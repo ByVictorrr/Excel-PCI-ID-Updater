@@ -38,20 +38,22 @@ public class VendorAdapter extends TypeAdapter<Vendor> {
                     }else {
                         v.setVendor(id);
                     }
-                }
 
-                if(VENDOR_NAME_KEY.equals(fieldName)){
+                }else if(VENDOR_NAME_KEY.equals(fieldName)){
                     name = reader.nextString();
                     if(v != null) v.setName(name);
-                }
-                if(VENDOR_DEVICES_KEY.equals(fieldName)){
-                    reader.beginArray();
-                    while(reader.hasNext()){
-                        TypeAdapter<Device> deviceTypeAdapter = new Gson().getAdapter(Device.class);
-                        if(v != null && v.getDevices() == null) v.setDevices(new PriorityQueue<>());
-                        if((d = deviceTypeAdapter.read(reader)) != null && v!=null) v.addDevice(d);
+                }else if(VENDOR_DEVICES_KEY.equals(fieldName)){
+                    if(reader.peek() == JsonToken.BEGIN_ARRAY) {
+                        reader.beginArray();
+                        while (reader.hasNext()) {
+                            TypeAdapter<Device> deviceTypeAdapter = new Gson().getAdapter(Device.class);
+                            if (v != null && v.getDevices() == null) v.setDevices(new PriorityQueue<>());
+                            if ((d = deviceTypeAdapter.read(reader)) != null && v != null) v.addDevice(d);
+                        }
+                        reader.endArray();
+                    }else if(reader.peek() == JsonToken.NULL){
+                        reader.nextNull();
                     }
-                    reader.endArray();
                 }
             }
 
