@@ -24,41 +24,35 @@ public class PIU implements Runnable{
     @CommandLine.Parameters(index = "1", description = "This is the output pci.ids file")
     private File outputPCIidFile;
 
-    @CommandLine.ArgGroup(exclusive = true, multiplicity = "1")
-    private ExclusiveVendor exclusiveVendor;
-    /*
-    @CommandLine.ArgGroup( , multiplicity = "0")
-    private ExclusiveClass exclusiveClass;
+    @CommandLine.ArgGroup(exclusive = false, multiplicity = "1..*")
+    private UpdateOptions options;
 
-     */
-    private PrintStream logger = System.err;
+    public PrintStream logger = System.err;
 
 
-    static class ExclusiveVendor{
-        @CommandLine.Option(names={"-p", "--pci"}, required = true, description="Json formatted pci id entries")
-        private File piuJSON = null;
-        @CommandLine.Option(names={"-e", "--entry-pci"}, required = true, description="single entry <ven:vname:dev:dname:sv:sd:sname>")
-        private String piuEntry = null;
-    }
-    static class ExclusiveClass{
-        @CommandLine.Option(names={"-c", "--class"}, required = true, description="Json formatted pci id entries")
-        private File piuJSON = null;
-        @CommandLine.Option(names={"-i", "--single-class"}, required = true, description="single entry <class:className:subclass:subclassName:prog-IF:prog-IF-name>")
-        private String piuEntry = null;
+    static class UpdateOptions{
+        @CommandLine.Option(names={"-p", "--pci"}, description="Json formatted pci id entries")
+        private File vendorJSON = null;
+        @CommandLine.Option(names={"-e", "--entry-pci"}, description="single entry <ven:vname:dev:dname:sv:sd:sname>")
+        private String vendorEntry = null;
+        @CommandLine.Option(names={"-c", "--class"}, description="Json formatted pci id entries")
+        private File classJSON = null;
+        @CommandLine.Option(names={"-i", "--single-class"},  description="single entry <class:className:subclass:subclassName:prog-IF:prog-IF-name>")
+        private String classEntry = null;
     }
 
     private PriorityQueue<Vendor> buildPendingVendors() throws Exception{
         PriorityQueue<Vendor> pv = null;
-        if(exclusiveVendor.piuEntry != null && exclusiveVendor.piuJSON != null){
+        if(options.vendorEntry != null && options.vendorJSON != null){
             pv = new GsonBuilder().setLenient().create().fromJson(
-                    new FileReader(exclusiveVendor.piuJSON), new TypeToken<PriorityQueue<Vendor>>(){}.getType()
+                    new FileReader(options.vendorJSON), new TypeToken<PriorityQueue<Vendor>>(){}.getType()
             );
             pv.add(new Vendor()); // parse here
-        }else if(exclusiveVendor.piuJSON != null){
+        }else if(options.vendorJSON != null){
             pv = new GsonBuilder().setLenient().create().fromJson(
-                new FileReader(exclusiveVendor.piuJSON), new TypeToken<PriorityQueue<Vendor>>(){}.getType()
+                new FileReader(options.vendorJSON), new TypeToken<PriorityQueue<Vendor>>(){}.getType()
             );
-        }else if(exclusiveVendor.piuEntry != null){
+        }else if(options.vendorEntry != null){
             pv = new PriorityQueue<>();
             pv.add(new Vendor()); // parse here
         }
