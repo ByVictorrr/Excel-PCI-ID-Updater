@@ -1,26 +1,26 @@
 package parsers.models.classmodels;
 
 public class ProgIFLine {
-    private Integer progIF;
+    private Integer id;
     private String name;
 
     public ProgIFLine(){
-        this.progIF = null;
+        this.id = null;
         this.name = null;
     }
 
-    public ProgIFLine(Integer progIF, String name) {
-        this.progIF = progIF;
+    public ProgIFLine(Integer id, String name) {
+        this.id = id;
         this.name = name;
     }
 
 
-    public Integer getProgIF() {
-        return progIF;
+    public Integer getId() {
+        return id;
     }
 
-    public void setProgIF(Integer progIF) {
-        this.progIF = progIF;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {

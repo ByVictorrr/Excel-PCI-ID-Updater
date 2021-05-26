@@ -1,23 +1,23 @@
 package parsers.models.classmodels;
 
 public class SubClassLine {
-    private Integer subClass;
+    private Integer id;
     private String name;
     public SubClassLine(){
         this.name = null;
-        this.subClass = null;
+        this.id = null;
     }
-    public SubClassLine(Integer subClass, String name) {
-        this.subClass = subClass;
+    public SubClassLine(Integer id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    public Integer getSubClass() {
-        return subClass;
+    public Integer getId() {
+        return id;
     }
 
-    public void setSubClass(Integer subClass) {
-        this.subClass = subClass;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
