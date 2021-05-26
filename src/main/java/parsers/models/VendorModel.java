@@ -21,9 +21,6 @@ public class VendorModel{
     private static VendorModel instance;
 
 
-    public static final int CONTINUE =  -1;
-    public static final int EQUAL =  0; // EQUAL mean continue unless overiding enabled
-    public static final int WRITE =  1;
 
     private VendorModel(){ this.resetModel();}
 
@@ -50,58 +47,6 @@ public class VendorModel{
     }
 
 
-    public int compareTo(SubSystem to){
-        int ret = WRITE;
-        if(this.sub.getvId() < to.getSubVendor()) {
-            ret = CONTINUE;
-        }else if(this.sub.getvId() == to.getSubVendor()) {
-            if (this.sub.getdId() < to.getSubDevice()) {
-                ret = CONTINUE;
-            } else if (this.sub.getdId() == to.getSubDevice()){
-                return EQUAL;
-            }else {
-                ret = WRITE;
-            }
-        }else{
-            ret = WRITE;
-        }
-        return ret;
-    }
-
-    public int compareTo(Device to){
-        int ret = CONTINUE;
-        if(this.dev.getId() < to.getDevice()) {
-            ret = CONTINUE;
-        }else if( this.dev.getId() == to.getDevice()){
-            if(to.size() > 0 && this.sub != null)
-                ret = this.compareTo(to.getSubSystems().peek());
-            else if(to.getSubSystems().isEmpty() && this.sub != null)
-                ret = EQUAL;
-            else ret = WRITE;
-        }
-        return ret;
-    }
-
-
-    public int compareTo(Vendor to){
-
-        int ret = CONTINUE;
-        if(this.ven.getId() < to.getVendor()) {
-            ret = CONTINUE;
-        }else if( this.ven.getId() == to.getVendor()){
-            if(to.size() > 0 && this.dev != null){
-                ret = this.compareTo(to.getDevices().peek());
-            }else if(to.getDevices().isEmpty() && this.dev == null) {
-                ret = EQUAL;
-            }else{
-                ret = CONTINUE;
-            }
-        }else{
-            ret = WRITE; // means write vendor
-        }
-
-        return ret;
-    }
 
     public void resetModel(){
         ven = null;

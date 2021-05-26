@@ -33,11 +33,17 @@ public class Device implements Comparable<Device>{
 
     @Override
     public String toString() {
-        String ret =toLine();
-        if(this.subSystems != null){
-            for(SubSystem sub: this.subSystems){
-                ret+="\n"+sub.toString();
-            }
+        String subSystemsToString = subSystemsToString();
+        String ret;
+        if(subSystemsToString == null) ret = toLine();
+        else ret = toLine() +  subSystemsToString;
+        return ret;
+    }
+    public String subSystemsToString(){
+        String ret = "";
+        if(this.subSystems == null) return null;
+        for(SubSystem s: this.subSystems){
+           ret += "\n" + s.toString();
         }
         return ret;
     }

@@ -61,13 +61,20 @@ public class Vendor implements Comparable<Vendor>{
 
     @Override
     public String toString() {
-        String ret = toLine();
-        if(this.devices != null) {
-            for(Device dev: this.devices){
-                ret += "\n" + dev.toString();
-            }
+        String ret;
+        String devicesToString = devicesToString();
+        if(devicesToString == null) ret =  toLine();
+        else ret = toLine() +  devicesToString;
+        return ret;
+    }
+    public String devicesToString(){
+        String ret = "";
+        if(this.devices == null) return ret;
+        for(Device d: this.devices){
+           ret += "\n" + d.toString();
         }
         return ret;
+
     }
     public String toLine(){
         return String.format("%04x", this.vendor) + "  " + this.name;
