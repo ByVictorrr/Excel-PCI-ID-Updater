@@ -14,10 +14,6 @@ import utilities.Updater;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static parsers.models.VendorModel.*;
-import static utilities.Updater.update;
 
 
 @CommandLine.Command(name="piu", version="piu 1.0", mixinStandardHelpOptions = true)
@@ -44,6 +40,42 @@ public class PIU implements Runnable{
         @CommandLine.Option(names={"-i", "--single-class"},  description="single entry <class:className:subclass:subclassName:prog-IF:prog-IF-name>")
         private String classEntry = null;
     }
+
+
+
+
+
+
+
+
+    public static void main(String [] args){
+
+        int exitCode = new CommandLine(new PIU()).execute(args);
+        System.exit(exitCode);
+    }
+
+    @Override
+    public void run() {
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(inputPCIidFile));
+            LineCountWriter out = new LineCountWriter(new FileWriter(outputPCIidFile));
+            //Logger.getInstance().init(new FileOutputStream("C:\\Users\\delaplai\\Excel-PCI-ID-Updater\\src\\main\\tests\\logs"));
+
+            PriorityQueue<Vendor> pendingVendors = buildPendingVendors();
+            PriorityQueue<Class> pendingClasses = buildPendingClasses();
+
+
+            Updater.update(pendingVendors, pendingClasses, in, out);
+
+            out.close();
+            in.close();
+        }catch (Exception e){
+            e.printStackTrace();
+            Logger.getInstance().println(e);
+        }
+
+    }
+
 
     private PriorityQueue<Vendor> buildPendingVendors() throws Exception{
         PriorityQueue<Vendor> pv = null;
@@ -86,41 +118,6 @@ public class PIU implements Runnable{
         return pc;
     }
 
-
-
-
-
-
-    @Override
-    public void run() {
-
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(inputPCIidFile));
-            LineCountWriter out = new LineCountWriter(new FileWriter(outputPCIidFile));
-            //Logger.getInstance().init(new FileOutputStream("C:\\Users\\delaplai\\Excel-PCI-ID-Updater\\src\\main\\tests\\logs"));
-
-            PriorityQueue<Vendor> pendingVendors = buildPendingVendors();
-            PriorityQueue<Class> pendingClasses = buildPendingClasses();
-
-
-            Updater.update(pendingVendors, pendingClasses, in, out);
-
-            out.close();
-            in.close();
-        }catch (Exception e){
-            e.printStackTrace();
-            Logger.getInstance().println(e);
-        }
-
-    }
-
-
-
-    public static void main(String [] args){
-
-        int exitCode = new CommandLine(new PIU()).execute(args);
-        System.exit(exitCode);
-    }
 
 
 

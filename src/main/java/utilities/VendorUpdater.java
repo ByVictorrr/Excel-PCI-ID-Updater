@@ -151,9 +151,7 @@ public class VendorUpdater {
             currVendor = pv.peek();
             command = getCommand(vendorModel, currVendor, currLine, nextLine);
         }
-        if(!isInsertCommand(command)){
-            runCommand(pv, writer, command);
-        }
+        if(!isInsertCommand(command))runCommand(pv, writer, command);
 
     }
 }

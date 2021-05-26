@@ -10,7 +10,7 @@ import utilities.Logger;
 import java.io.IOException;
 
 public class ProgIFAdapter extends TypeAdapter<ProgIF>{
-    public static final String PROGIF_ID_KEY = "subClass";
+    public static final String PROGIF_ID_KEY = "progIF";
     public static final String PROGIF_NAME_KEY = "name";
     @Override
     public ProgIF read(JsonReader reader)throws IOException
@@ -33,7 +33,7 @@ public class ProgIFAdapter extends TypeAdapter<ProgIF>{
                     prog.setProgIF(id);
                 }
 
-            }else if(PROGIF_ID_KEY.equals(fieldName)){
+            }else if(PROGIF_NAME_KEY.equals(fieldName)){
                 if(reader.peek() == JsonToken.STRING) {
                     name = reader.nextString();
                     if (prog != null) prog.setName(name);

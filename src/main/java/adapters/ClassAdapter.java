@@ -51,7 +51,7 @@ public class ClassAdapter extends TypeAdapter<Class> {
                     while (reader.hasNext()) {
                         TypeAdapter<SubClass> subClassTypeAdapter = new Gson().getAdapter(SubClass.class);
                         if (c != null && c.getSubClasses() == null) c.setSubClasses(new PriorityQueue<>());
-                        if ((sc = subClassTypeAdapter.read(reader)) != null && sc != null) c.addSubClass(sc);
+                        if ((sc = subClassTypeAdapter.read(reader)) != null && c != null) c.addSubClass(sc);
                     }
                     reader.endArray();
                 }else if(reader.peek() == JsonToken.NULL){

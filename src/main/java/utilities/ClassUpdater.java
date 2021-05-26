@@ -16,6 +16,14 @@ public class ClassUpdater {
         POLL_CLASS, POLL_SUBCLASS, POLL_PROGIF
     };
 
+    private static boolean isInsertCommand(COMMANDS cmd){
+        return cmd == COMMANDS.INSERT_CLASS ||
+                cmd == COMMANDS.INSERT_SUBCLASS ||
+                cmd == COMMANDS.INSERT_PROGIF ||
+                cmd == COMMANDS.INSERT_SUBCLASSES ||
+                cmd == COMMANDS.INSERT_PROGIFS;
+    }
+
 
     /* Assuming vendors are equal */
     private static COMMANDS getCommand(ClassModel line, ProgIF to){
@@ -34,8 +42,9 @@ public class ClassUpdater {
         if(line.getSubClass().getId() > to.getSubClass()){
             ret = COMMANDS.INSERT_SUBCLASS;
         }else if(line.getSubClass().getId().equals(to.getSubClass())) {
-            if (to.size() == 0) ret = COMMANDS.POLL_SUBCLASS;
-            else if (currentLineType == LineParser.LineType.DEVICE_LINE) {
+            if (to.size() == 0) {
+                ret = COMMANDS.POLL_SUBCLASS;
+            }else if (currentLineType == LineParser.LineType.DEVICE_LINE) {
                 if (nextLineType == LineParser.LineType.DEVICE_LINE) ret = COMMANDS.INSERT_PROGIFS;
                 else if (nextLineType == LineParser.LineType.SUBSYSTEM_LINE) ret = COMMANDS.CONTINUE;
                 else if (nextLineType == LineParser.LineType.VENDOR_LINE) ret = COMMANDS.INSERT_PROGIFS;
@@ -108,11 +117,19 @@ public class ClassUpdater {
                 Logger.getInstance().println("new output at line " + writer.getLineNumber() + ":\n" + tempS.getProgIFS().toString());
                 break;
             case POLL_CLASS:
-
+                pc.poll();
                 break;
             case POLL_SUBCLASS:
+                tempC=pc.peek();
+                tempS=tempC.getSubClasses().poll();
+                if(tempC.size() == 0) pc.poll();
                 break;
             case POLL_PROGIF:
+                tempC=pc.peek();
+                tempS=tempC.getSubClasses().peek();
+                tempP = tempS.getProgIFS().poll();
+                if(tempS.size() == 0) tempC.getSubClasses().poll();
+                if(tempC.size() == 0) pc.poll();
                 break;
 
 
@@ -123,6 +140,18 @@ public class ClassUpdater {
 
         ClassModel classModel = LineParser.getInstance().getClassModel();
         Class currClass = pc.peek();
+
+
+        COMMANDS command = getCommand(classModel, currClass, currLine, nextLine);
+
+        while (isInsertCommand(command)) {
+            runCommand(pc, writer, command);
+            if((currClass=pc.peek()) == null)
+                return;
+            else
+                command = getCommand(classModel, currClass, currLine, nextLine);
+        }
+        if(!isInsertCommand(command))runCommand(pc, writer, command);
 
     }
 

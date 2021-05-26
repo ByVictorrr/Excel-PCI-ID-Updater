@@ -28,7 +28,6 @@
 0001  SafeNet (wrong ID)
 0010  Allied Telesis, Inc (Wrong ID)
 # This is a relabelled RTL-8139
-	0102  device vic
 	8139  AT-2500TX V3 Ethernet
 0014  Loongson Technology LLC
 	7a00  Hyper Transport Bridge Controller
@@ -24117,11 +24116,6 @@
 416c  Aladdin Knowledge Systems
 	0100  AladdinCARD
 	0200  CPC
-4215  QLogicz
-	9522  ISP2532-based 8Gb Fibre Channel to PCI Express HBA
-		4116 1054  hi
-		ffff 1023  FC EN0Y/EN12 PCIe2 LP 8 Gb 2-port Fibre Channel Adapter for POWER
-	fff2  ISPLess
 4254  DVBSky
 4321  Tata Power Strategic Electronics Division
 4348  WCH.CN
@@ -33622,7 +33616,6 @@ e000  Winbond
 e159  Tiger Jet Network Inc. / ICP DAS
 	0001  Tiger3XX Modem/ISDN interface
 		0059 0001  128k ISDN-S/T Adapter
-		0059 0002  hello world
 		0059 0003  128k ISDN-U Adapter
 		00a7 0001  TELES.S0/PCI 2.x ISDN Adapter
 		8086 0003  Digium X100P/X101P analogue PSTN FXO interface
@@ -33721,9 +33714,6 @@ ec80  Belkin Corporation
 ecc0  Echo Digital Audio Corporation
 edd8  ARK Logic Inc
 	a091  1000PV [Stingray]
-	a092  100)v
-		ffff 1023  FC EN0Y/EN12 PCIe2 LP 8 Gb 2-port Fibre Channel Adapter for POWER
-	a093  hi
 	a099  2000PV [Stingray]
 	a0a1  2000MT
 	a0a9  2000MI
@@ -33974,6 +33964,7 @@ C 0c  Serial bus controller
 C 0d  Wireless controller
 	00  IRDA controller
 	01  Consumer IR controller
+models.SubClass@1a8a8f7c
 	10  RF controller
 	11  Bluetooth
 	12  Broadband

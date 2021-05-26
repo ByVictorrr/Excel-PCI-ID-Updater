@@ -5,7 +5,14 @@
         "subClasses": [
                 {
                     "subClass": 02,
-                    "name": "victor"
+                    "name": "victor",
+                    "progIFs": [
+                        {
+                            "progIF": 00,
+                            "name": "progIF"
+
+                        }
+                    ]
 
                 }
 
