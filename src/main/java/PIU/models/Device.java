@@ -1,14 +1,16 @@
 package PIU.models;
 
 import PIU.adapters.DeviceAdapter;
+import PIU.utilities.UniquePriorityQueue;
 import com.google.gson.annotations.JsonAdapter;
 
-import java.util.PriorityQueue;
+import java.util.Objects;
+
 @JsonAdapter(DeviceAdapter.class)
 public class Device implements Comparable<Device>{
     private Integer device;
     private String name;
-    private PriorityQueue<SubSystem>subSystems;
+    private UniquePriorityQueue<SubSystem> subSystems;
 
     public Device(){
         this.device = null;
@@ -20,6 +22,24 @@ public class Device implements Comparable<Device>{
         this.device = device;
         this.name = name;
         this.subSystems = null;
+    }
+
+    public int size(){
+        if(subSystems == null) return 0;
+        return subSystems.size();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Device device1 = (Device) o;
+        return Objects.equals(device, device1.device);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(device);
     }
 
     @Override
@@ -56,7 +76,7 @@ public class Device implements Comparable<Device>{
         return name;
     }
 
-    public PriorityQueue<SubSystem> getSubSystems() {
+    public UniquePriorityQueue<SubSystem> getSubSystems() {
         return subSystems;
     }
 
@@ -68,16 +88,12 @@ public class Device implements Comparable<Device>{
         this.name = name;
     }
 
-    public void setSubSystems(PriorityQueue<SubSystem> subSystems) {
+    public void setSubSystems(UniquePriorityQueue<SubSystem> subSystems) {
         this.subSystems = subSystems;
     }
     public void addSubSystem(SubSystem s){
         this.subSystems.add(s);
     }
 
-    public int size(){
-        if(subSystems == null)
-            return 0;
-        return subSystems.size();
-    }
+
 }

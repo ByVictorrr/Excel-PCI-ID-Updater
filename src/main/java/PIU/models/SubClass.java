@@ -1,15 +1,16 @@
 package PIU.models;
 
 import PIU.adapters.SubClassAdapter;
+import PIU.utilities.UniquePriorityQueue;
 import com.google.gson.annotations.JsonAdapter;
 
-import java.util.PriorityQueue;
+import java.util.Objects;
 
 @JsonAdapter(SubClassAdapter.class)
 public class SubClass implements Comparable<SubClass>{
     private Integer subClass;
     private String name;
-    private PriorityQueue<ProgIF> progIFS;
+    private UniquePriorityQueue<ProgIF> progIFS;
     public SubClass(){
         subClass = null;
         name = null;
@@ -19,6 +20,19 @@ public class SubClass implements Comparable<SubClass>{
         this.subClass = sc;
         this.name = name;
         this.progIFS = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SubClass subClass1 = (SubClass) o;
+        return Objects.equals(subClass, subClass1.subClass);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(subClass);
     }
 
     @Override
@@ -71,11 +85,11 @@ public class SubClass implements Comparable<SubClass>{
         this.name = name;
     }
 
-    public PriorityQueue<ProgIF> getProgIFS() {
+    public UniquePriorityQueue<ProgIF> getProgIFS() {
         return progIFS;
     }
 
-    public void setProgIFS(PriorityQueue<ProgIF> progIFS) {
+    public void setProgIFS(UniquePriorityQueue<ProgIF> progIFS) {
         this.progIFS = progIFS;
     }
 }

@@ -12,7 +12,7 @@ public class Updater {
 
 
 
-    public static void update(PriorityQueue<Vendor> pv, PriorityQueue<Class> pc, BufferedReader reader, LineCountWriter writer) throws Exception
+    public static void update(UniquePriorityQueue<Vendor> pv, UniquePriorityQueue<Class> pc, BufferedReader reader, LineCountWriter writer) throws Exception
     {
         int lineNum = 1;
         String c, n;

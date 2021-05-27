@@ -54,8 +54,8 @@ public class PIU implements Runnable{
             LineCountWriter out = new LineCountWriter(new FileWriter(outputPCIidFile));
             //Logger.getInstance().init(new FileOutputStream("C:\\Users\\delaplai\\Excel-PCI-ID-Updater\\src\\main\\tests\\logs"));
 
-            PriorityQueue<Vendor> pendingVendors = buildPendingVendors();
-            PriorityQueue<Class> pendingClasses = buildPendingClasses();
+            UniquePriorityQueue<Vendor> pendingVendors = buildPendingVendors();
+            UniquePriorityQueue<Class> pendingClasses = buildPendingClasses();
 
 
             Updater.update(pendingVendors, pendingClasses, in, out);
@@ -70,41 +70,41 @@ public class PIU implements Runnable{
     }
 
 
-    private PriorityQueue<Vendor> buildPendingVendors() throws Exception{
-        PriorityQueue<Vendor> pv = null;
+    private UniquePriorityQueue<Vendor> buildPendingVendors() throws Exception{
+        UniquePriorityQueue<Vendor> pv = null;
         if(options.vendorEntry != null && options.vendorJSON != null){
             pv = new GsonBuilder().setLenient().create().fromJson(
                     new FileReader(options.vendorJSON),
-                    new TypeToken<PriorityQueue<Vendor>>(){}.getType()
+                    new TypeToken<UniquePriorityQueue<Vendor>>(){}.getType()
             );
             pv.add(new Vendor()); // parse here
         }else if(options.vendorJSON != null){
             pv = new GsonBuilder().setLenient().create().fromJson(
                     new FileReader(options.vendorJSON),
-                    new TypeToken<PriorityQueue<Vendor>>(){}.getType()
+                    new TypeToken<UniquePriorityQueue<Vendor>>(){}.getType()
             );
         }else if(options.vendorEntry != null){
-            pv = new PriorityQueue<>();
+            pv = new UniquePriorityQueue<>();
             pv.add(new Vendor()); // parse here
         }
 
         return pv;
     }
-    private PriorityQueue<Class> buildPendingClasses() throws Exception{
-        PriorityQueue<Class> pc = null;
+    private UniquePriorityQueue<Class> buildPendingClasses() throws Exception{
+        UniquePriorityQueue<Class> pc = null;
         if(options.classEntry != null && options.classJSON != null){
             pc = new GsonBuilder().setLenient().create().fromJson(
                     new FileReader(options.classJSON),
-                    new TypeToken<PriorityQueue<Class>>(){}.getType()
+                    new TypeToken<UniquePriorityQueue<Class>>(){}.getType()
             );
             pc.add(new Class()); // parse after
         }else if(options.classJSON != null){
             pc = new GsonBuilder().setLenient().create().fromJson(
                     new FileReader(options.classJSON),
-                    new TypeToken<PriorityQueue<Class>>(){}.getType()
+                    new TypeToken<UniquePriorityQueue<Class>>(){}.getType()
             );
         }else if(options.classEntry != null){
-            pc = new PriorityQueue<>();
+            pc = new UniquePriorityQueue<>();
             pc.add(new Class());
 
         }

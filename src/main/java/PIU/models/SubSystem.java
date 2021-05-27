@@ -3,6 +3,8 @@ package PIU.models;
 import PIU.adapters.SubSystemAdapter;
 import com.google.gson.annotations.JsonAdapter;
 
+import java.util.Objects;
+
 @JsonAdapter(SubSystemAdapter.class)
 public class SubSystem implements Comparable<SubSystem>{
     private Integer subVendor;
@@ -21,6 +23,20 @@ public class SubSystem implements Comparable<SubSystem>{
         this.subDevice = sd;
         this.name = name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SubSystem subSystem = (SubSystem) o;
+        return subVendor.equals(subSystem.subVendor) && subDevice.equals(subSystem.subDevice);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(subVendor, subDevice);
+    }
+
     @Override
     public int compareTo(SubSystem o) {
         if(this.subVendor < o.subVendor) {

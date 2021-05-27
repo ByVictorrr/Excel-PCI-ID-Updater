@@ -3,6 +3,8 @@ package PIU.models;
 import PIU.adapters.ProgIFAdapter;
 import com.google.gson.annotations.JsonAdapter;
 
+import java.util.Objects;
+
 @JsonAdapter(ProgIFAdapter.class)
 public class ProgIF implements Comparable<ProgIF>{
     private Integer progIF;
@@ -15,6 +17,19 @@ public class ProgIF implements Comparable<ProgIF>{
     public ProgIF(int progIF, String name){
         this.progIF = progIF;
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProgIF progIF1 = (ProgIF) o;
+        return Objects.equals(progIF, progIF1.progIF);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.progIF.hashCode();
     }
 
     @Override

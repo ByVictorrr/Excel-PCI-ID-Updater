@@ -1,16 +1,17 @@
 package PIU.models;
 
 import PIU.adapters.VendorAdapter;
+import PIU.utilities.UniquePriorityQueue;
 import com.google.gson.annotations.JsonAdapter;
 
-import java.util.PriorityQueue;
+import java.util.Objects;
 
 
 @JsonAdapter(VendorAdapter.class)
 public class Vendor implements Comparable<Vendor>{
     private Integer vendor;
     private String name;
-    private PriorityQueue<Device> devices;
+    private UniquePriorityQueue<Device> devices;
 
 
     public Vendor(){
@@ -34,7 +35,7 @@ public class Vendor implements Comparable<Vendor>{
         return name;
     }
 
-    public PriorityQueue<Device> getDevices() {
+    public UniquePriorityQueue<Device> getDevices() {
         return devices;
     }
 
@@ -46,12 +47,30 @@ public class Vendor implements Comparable<Vendor>{
         this.name = name;
     }
 
-    public void setDevices(PriorityQueue<Device> devices) {
+    public void setDevices(UniquePriorityQueue<Device> devices) {
         this.devices = devices;
     }
 
     public void addDevice(Device d){
         this.devices.add(d);
+    }
+
+    public int size(){
+        if(devices == null) return 0;
+        return devices.size();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vendor vendor1 = (Vendor) o;
+        return Objects.equals(vendor, vendor1.vendor);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(vendor);
     }
 
     @Override
@@ -78,12 +97,6 @@ public class Vendor implements Comparable<Vendor>{
     }
     public String toLine(){
         return String.format("%04x", this.vendor) + "  " + this.name;
-    }
-    public int size(){
-        if(devices == null){
-           return 0;
-        }
-        return devices.size();
     }
 
 

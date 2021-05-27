@@ -1,5 +1,6 @@
 package PIU.adapters;
 
+import PIU.utilities.UniquePriorityQueue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -50,7 +51,7 @@ public class ClassAdapter extends TypeAdapter<Class> {
                     reader.beginArray();
                     while (reader.hasNext()) {
                         TypeAdapter<SubClass> subClassTypeAdapter = new Gson().getAdapter(SubClass.class);
-                        if (c != null && c.getSubClasses() == null) c.setSubClasses(new PriorityQueue<>());
+                        if (c != null && c.getSubClasses() == null) c.setSubClasses(new UniquePriorityQueue<>());
                         if ((sc = subClassTypeAdapter.read(reader)) != null && c != null ) c.addSubClass(sc);
                     }
                     reader.endArray();

@@ -79,7 +79,7 @@ public class ClassUpdater {
         return ret;
     }
 
-    private static void runCommand(PriorityQueue<Class> pc, LineCountWriter writer, COMMANDS command) throws Exception {
+    private static void runCommand(UniquePriorityQueue<Class> pc, LineCountWriter writer, COMMANDS command) throws Exception {
         Class tempC;
         SubClass tempS;
         ProgIF tempP;
@@ -135,7 +135,7 @@ public class ClassUpdater {
 
         }
     }
-    public static void update(PriorityQueue<Class> pc, LineCountWriter writer,
+    public static void update(UniquePriorityQueue<Class> pc, LineCountWriter writer,
                                            LineParser.LineType currLine, LineParser.LineType nextLine) throws Exception {
 
         ClassModel classModel = LineParser.getInstance().getClassModel();

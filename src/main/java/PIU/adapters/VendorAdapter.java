@@ -1,5 +1,6 @@
 package PIU.adapters;
 
+import PIU.utilities.UniquePriorityQueue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -53,7 +54,7 @@ public class VendorAdapter extends TypeAdapter<Vendor> {
                         reader.beginArray();
                         while (reader.hasNext()) {
                             TypeAdapter<Device> deviceTypeAdapter = new Gson().getAdapter(Device.class);
-                            if (v != null && v.getDevices() == null) v.setDevices(new PriorityQueue<>());
+                            if (v != null && v.getDevices() == null) v.setDevices(new UniquePriorityQueue<>());
                             if ((d = deviceTypeAdapter.read(reader)) != null && v != null) v.addDevice(d);
                         }
                         reader.endArray();

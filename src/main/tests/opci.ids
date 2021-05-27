@@ -29,7 +29,6 @@
 0010  Allied Telesis, Inc (Wrong ID)
 # This is a relabelled RTL-8139
 	0102  device vic
-	0102  device vic
 	8139  AT-2500TX V3 Ethernet
 0014  Loongson Technology LLC
 	7a00  Hyper Transport Bridge Controller
@@ -33974,7 +33973,7 @@ C 0c  Serial bus controller
 	09  CANBUS
 C 0d  Wireless controller
 	00  IRDA controller
-[		00  zero, 		01  progIF]
+PIU.utilities.UniquePriorityQueue@2c039ac6
 	01  Consumer IR controller
 	02  victor
 		00  progIF

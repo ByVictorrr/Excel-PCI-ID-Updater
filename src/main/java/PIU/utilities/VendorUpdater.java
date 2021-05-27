@@ -77,7 +77,7 @@ public class VendorUpdater {
         }
         return ret;
     }
-    private static void runCommand(PriorityQueue<Vendor> pv, LineCountWriter writer, COMMANDS command) throws Exception{
+    private static void runCommand(UniquePriorityQueue<Vendor> pv, LineCountWriter writer, COMMANDS command) throws Exception{
         Vendor tempV;
         Device tempD;
         SubSystem tempS;
@@ -139,7 +139,7 @@ public class VendorUpdater {
 
 
     /* Assumed to have at least one vendor in the queue*/
-    public static void update(PriorityQueue<Vendor> pv, LineCountWriter writer,
+    public static void update(UniquePriorityQueue<Vendor> pv, LineCountWriter writer,
                               LineParser.LineType currLine, LineParser.LineType nextLine) throws Exception{
 
         VendorModel vendorModel = LineParser.getInstance().getVendorModel();

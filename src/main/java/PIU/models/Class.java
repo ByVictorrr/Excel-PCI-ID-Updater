@@ -1,15 +1,17 @@
 package PIU.models;
 
 import PIU.adapters.ClassAdapter;
+import PIU.utilities.UniquePriorityQueue;
 import com.google.gson.annotations.JsonAdapter;
 
+import java.util.Objects;
 import java.util.PriorityQueue;
 
 @JsonAdapter(ClassAdapter.class)
 public class Class implements Comparable<Class>{
     private Integer _class;
     private String name;
-    private PriorityQueue<SubClass> subClasses;
+    private UniquePriorityQueue<SubClass> subClasses;
 
     public Class(){
         this._class = null;
@@ -35,6 +37,19 @@ public class Class implements Comparable<Class>{
         if(this.subClasses != null)
             return subClasses.size();
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Class aClass = (Class) o;
+        return Objects.equals(_class, aClass._class);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_class);
     }
 
     @Override
@@ -76,11 +91,11 @@ public class Class implements Comparable<Class>{
         this.name = name;
     }
 
-    public PriorityQueue<SubClass> getSubClasses() {
+    public UniquePriorityQueue<SubClass> getSubClasses() {
         return subClasses;
     }
 
-    public void setSubClasses(PriorityQueue<SubClass> subClasses) {
+    public void setSubClasses(UniquePriorityQueue<SubClass> subClasses) {
         this.subClasses = subClasses;
     }
 }
