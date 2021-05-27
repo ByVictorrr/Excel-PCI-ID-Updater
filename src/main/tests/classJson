@@ -11,10 +11,32 @@
                             "progIF": 00,
                             "name": "progIF"
 
+                        },
+                        {
+                            "progIF": 01,
+                            "name": "one"
+
                         }
                     ]
 
-                }
+                },
+                {
+                    "subClass": 01,
+                    "name": "victor",
+                    "progIFs": [
+                        {
+                            "progIF": 01,
+                            "name": "progIF"
+
+                        },
+                        {
+                            "progIF": 00,
+                            "name": "zero"
+
+                        }
+                    ]
+
+                 }
 
         ]
 

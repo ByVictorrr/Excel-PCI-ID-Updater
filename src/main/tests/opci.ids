@@ -28,6 +28,8 @@
 0001  SafeNet (wrong ID)
 0010  Allied Telesis, Inc (Wrong ID)
 # This is a relabelled RTL-8139
+	0102  device vic
+	0102  device vic
 	8139  AT-2500TX V3 Ethernet
 0014  Loongson Technology LLC
 	7a00  Hyper Transport Bridge Controller
@@ -12633,7 +12635,7 @@
 		103c 2a6f  Asus IPIBL-LB Motherboard
 		103c 825b  OMEN-17-w001nv
 		103c 8615  Pavilion Laptop 15-cw1xxx
-		1043 11f5  Notebook motherboard (one of many models)
+		1043 11f5  Notebook motherboard (one of many PIU.PIU.models)
 		1043 16d5  U6V/U31J laptop
 		1043 81aa  P5B
 		1043 82c6  M3A78 Series Motherboard
@@ -19811,9 +19813,9 @@
 	8200  CX25850
 	8234  RS8234 ATM SAR Controller [ServiceSAR Plus]
 	8800  CX23880/1/2/3 PCI Video and Audio Decoder
-		0070 2801  Hauppauge WinTV 28xxx (Roslyn) models
+		0070 2801  Hauppauge WinTV 28xxx (Roslyn) PIU.PIU.models
 		0070 3400  WinTV 34604
-		0070 3401  Hauppauge WinTV 34xxx models
+		0070 3401  Hauppauge WinTV 34xxx PIU.PIU.models
 		0070 6902  WinTV HVR-4000-HD
 		0070 7801  WinTV HVR-1800 MCE
 		0070 9001  Nova-T DVB-T
@@ -19862,12 +19864,12 @@
 		7063 3000  pcHDTV HD3000 HDTV
 		7063 5500  pcHDTV HD-5500
 	8801  CX23880/1/2/3 PCI Video and Audio Decoder [Audio Port]
-		0070 2801  Hauppauge WinTV 28xxx (Roslyn) models
+		0070 2801  Hauppauge WinTV 28xxx (Roslyn) PIU.PIU.models
 		185b e000  VideoMate X500
 		5654 2388  GoTView PCI Hybrid Audio AVStream Device
 		7063 5500  pcHDTV HD-5500
 	8802  CX23880/1/2/3 PCI Video and Audio Decoder [MPEG Port]
-		0070 2801  Hauppauge WinTV 28xxx (Roslyn) models
+		0070 2801  Hauppauge WinTV 28xxx (Roslyn) PIU.PIU.models
 		0070 6902  WinTV HVR-4000-HD
 		0070 9002  Nova-T DVB-T Model 909
 		0070 9402  WinTV-HVR1100 DVB-T/Hybrid
@@ -19893,7 +19895,7 @@
 		7063 5500  pcHDTV HD-5500
 	8811  CX23880/1/2/3 PCI Video and Audio Decoder [Audio Port]
 		0070 3400  WinTV 34604
-		0070 3401  Hauppauge WinTV 34xxx models
+		0070 3401  Hauppauge WinTV 34xxx PIU.PIU.models
 		0070 6902  WinTV HVR-4000-HD
 		0070 9402  WinTV-HVR1100 DVB-T/Hybrid
 		0070 9600  WinTV 88x Audio
@@ -24116,6 +24118,11 @@
 416c  Aladdin Knowledge Systems
 	0100  AladdinCARD
 	0200  CPC
+4215  QLogicz
+	9522  ISP2532-based 8Gb Fibre Channel to PCI Express HBA
+		4116 1054  hi
+		ffff 1023  FC EN0Y/EN12 PCIe2 LP 8 Gb 2-port Fibre Channel Adapter for POWER
+	fff2  ISPLess
 4254  DVBSky
 4321  Tata Power Strategic Electronics Division
 4348  WCH.CN
@@ -33616,6 +33623,7 @@ e000  Winbond
 e159  Tiger Jet Network Inc. / ICP DAS
 	0001  Tiger3XX Modem/ISDN interface
 		0059 0001  128k ISDN-S/T Adapter
+		0059 0002  hello world
 		0059 0003  128k ISDN-U Adapter
 		00a7 0001  TELES.S0/PCI 2.x ISDN Adapter
 		8086 0003  Digium X100P/X101P analogue PSTN FXO interface
@@ -33714,6 +33722,9 @@ ec80  Belkin Corporation
 ecc0  Echo Digital Audio Corporation
 edd8  ARK Logic Inc
 	a091  1000PV [Stingray]
+	a092  100)v
+		ffff 1023  FC EN0Y/EN12 PCIe2 LP 8 Gb 2-port Fibre Channel Adapter for POWER
+	a093  hi
 	a099  2000PV [Stingray]
 	a0a1  2000MT
 	a0a9  2000MI
@@ -33963,9 +33974,11 @@ C 0c  Serial bus controller
 	09  CANBUS
 C 0d  Wireless controller
 	00  IRDA controller
+[		00  zero, 		01  progIF]
 	01  Consumer IR controller
 	02  victor
 		00  progIF
+		01  one
 	10  RF controller
 	11  Bluetooth
 	12  Broadband

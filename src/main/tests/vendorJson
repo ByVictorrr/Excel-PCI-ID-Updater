@@ -77,6 +77,10 @@
             {
                 "device": 0102,
                 "name": "device vic"
+            },
+            {
+                 "device": 0102,
+                 "name": "device vic"
             }
         ]
     }

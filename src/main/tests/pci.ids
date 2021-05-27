@@ -12633,7 +12633,7 @@
 		103c 2a6f  Asus IPIBL-LB Motherboard
 		103c 825b  OMEN-17-w001nv
 		103c 8615  Pavilion Laptop 15-cw1xxx
-		1043 11f5  Notebook motherboard (one of many models)
+		1043 11f5  Notebook motherboard (one of many PIU.PIU.models)
 		1043 16d5  U6V/U31J laptop
 		1043 81aa  P5B
 		1043 82c6  M3A78 Series Motherboard
@@ -19811,9 +19811,9 @@
 	8200  CX25850
 	8234  RS8234 ATM SAR Controller [ServiceSAR Plus]
 	8800  CX23880/1/2/3 PCI Video and Audio Decoder
-		0070 2801  Hauppauge WinTV 28xxx (Roslyn) models
+		0070 2801  Hauppauge WinTV 28xxx (Roslyn) PIU.PIU.models
 		0070 3400  WinTV 34604
-		0070 3401  Hauppauge WinTV 34xxx models
+		0070 3401  Hauppauge WinTV 34xxx PIU.PIU.models
 		0070 6902  WinTV HVR-4000-HD
 		0070 7801  WinTV HVR-1800 MCE
 		0070 9001  Nova-T DVB-T
@@ -19862,12 +19862,12 @@
 		7063 3000  pcHDTV HD3000 HDTV
 		7063 5500  pcHDTV HD-5500
 	8801  CX23880/1/2/3 PCI Video and Audio Decoder [Audio Port]
-		0070 2801  Hauppauge WinTV 28xxx (Roslyn) models
+		0070 2801  Hauppauge WinTV 28xxx (Roslyn) PIU.PIU.models
 		185b e000  VideoMate X500
 		5654 2388  GoTView PCI Hybrid Audio AVStream Device
 		7063 5500  pcHDTV HD-5500
 	8802  CX23880/1/2/3 PCI Video and Audio Decoder [MPEG Port]
-		0070 2801  Hauppauge WinTV 28xxx (Roslyn) models
+		0070 2801  Hauppauge WinTV 28xxx (Roslyn) PIU.PIU.models
 		0070 6902  WinTV HVR-4000-HD
 		0070 9002  Nova-T DVB-T Model 909
 		0070 9402  WinTV-HVR1100 DVB-T/Hybrid
@@ -19893,7 +19893,7 @@
 		7063 5500  pcHDTV HD-5500
 	8811  CX23880/1/2/3 PCI Video and Audio Decoder [Audio Port]
 		0070 3400  WinTV 34604
-		0070 3401  Hauppauge WinTV 34xxx models
+		0070 3401  Hauppauge WinTV 34xxx PIU.PIU.models
 		0070 6902  WinTV HVR-4000-HD
 		0070 9402  WinTV-HVR1100 DVB-T/Hybrid
 		0070 9600  WinTV 88x Audio
