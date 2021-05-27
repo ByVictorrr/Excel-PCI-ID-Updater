@@ -33964,7 +33964,8 @@ C 0c  Serial bus controller
 C 0d  Wireless controller
 	00  IRDA controller
 	01  Consumer IR controller
-models.SubClass@1a8a8f7c
+	02  victor
+		00  progIF
 	10  RF controller
 	11  Bluetooth
 	12  Broadband

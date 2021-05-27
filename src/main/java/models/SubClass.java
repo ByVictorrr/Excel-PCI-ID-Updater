@@ -31,6 +31,28 @@ public class SubClass implements Comparable<SubClass>{
             return this.progIFS.size();
         return 0;
     }
+    @Override
+    public String toString() {
+        String ret;
+        String progIFsToString = progIFsToString();
+        if(progIFsToString == null) ret = toLine();
+        else ret = toLine() + progIFsToString;
+        return ret;
+    }
+
+    public String progIFsToString(){
+        String ret = "";
+        if(this.progIFS == null) return null;
+        for(ProgIF p: this.progIFS){
+            ret += "\n" + p.toString();
+        }
+        return ret;
+
+    }
+    public String toLine(){
+        return String.format("\t%02x", this.subClass) + "  " + this.name;
+    }
+
 
 
     public Integer getSubClass() {

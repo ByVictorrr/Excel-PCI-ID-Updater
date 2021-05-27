@@ -18,6 +18,14 @@ public class ProgIF implements Comparable<ProgIF>{
     }
 
     @Override
+    public String toString(){
+        return toLine();
+    }
+
+    public String toLine(){
+        return String.format("\t\t%02x", this.progIF) + "  " + this.name;
+    }
+    @Override
     public int compareTo(ProgIF o){ return this.progIF - o.progIF; }
 
     public Integer getProgIF() {

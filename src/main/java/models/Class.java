@@ -36,15 +36,24 @@ public class Class implements Comparable<Class>{
             return subClasses.size();
         return 0;
     }
+
     @Override
     public String toString() {
-        String ret = toLine();
-        if(this.subClasses != null) {
-            for(SubClass subClass: this.subClasses){
-                ret += "\n" + subClass.toString();
-            }
+        String ret;
+        String subClassesToString = subClassesToString();
+        if(subClassesToString == null) ret = toLine();
+        else ret = toLine() + subClassesToString;
+        return ret;
+    }
+
+    public String subClassesToString(){
+        String ret = "";
+        if(this.subClasses == null) return ret;
+        for(SubClass s: this.subClasses){
+            ret += "\n" + s.toString();
         }
         return ret;
+
     }
     public String toLine(){
         return String.format("C %02x", this._class) + "  " + this.name;
